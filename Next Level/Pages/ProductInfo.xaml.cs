@@ -127,6 +127,7 @@ namespace Next_Level
             if (!string.IsNullOrEmpty(ComW.Text))
             {
                 Feedback feedback = new Feedback();
+                feedback.login = current_user.Login;
                 feedback.username = current_user.Name;
                 feedback.comment = ComW.Text;
                 feedback.date = $"{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}  {DateTime.Now.Hour}:{DateTime.Now.Minute}";
