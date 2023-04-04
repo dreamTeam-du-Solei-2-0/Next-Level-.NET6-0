@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Next_Level.Classes;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,6 @@ namespace Next_Level
     /// </summary>
     public partial class App : Application
     {
+        internal static readonly Logger Logger = new("log.txt");
     }
 }
