@@ -18,7 +18,7 @@ namespace Next_Level.Classes
         public static string CART_PATH { get; }= @"..\Cart.xml";
         public static readonly String ConnectionString = @"
             Data Source=(LocalDB)\MSSQLLocalDB;
-            AttachDbFilename=C:\Users\dsgnrr\source\repos\Next Level\Next Level\DataBase\NextLevelDB.mdf;
+            AttachDbFilename=C:\Users\Lenovo\source\repos\Next-Level-.NET6-0\Next Level\DataBase\NextLevelDB.mdf;
             Integrated Security=True";
     }
 }
