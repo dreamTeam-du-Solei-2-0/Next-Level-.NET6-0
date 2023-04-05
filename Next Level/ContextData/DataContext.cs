@@ -12,6 +12,8 @@ namespace Next_Level.ContextData
     internal class DataContext
     {
         private SqlConnection connection;
+        internal UserApi Users { get; set; }
+        internal AccountApi Accounts { get; set; }
         public DataContext()
         {
             connection = new(NextLevelPath.ConnectionString);
@@ -29,6 +31,8 @@ namespace Next_Level.ContextData
                 App.Logger.Log(msg, "SEVERE");
                 throw new Exception("Context creation failed. See server logs for details");
             }
+            Users = new(connection, this);
+            Accounts = new(connection, this);
         }
     }
 }

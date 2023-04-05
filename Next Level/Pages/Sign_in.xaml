@@ -5,84 +5,180 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Next_Level.Pages"
         mc:Ignorable="d"
-         Title="SignUp" Height="600" Width="400" WindowStyle="None"
-         Background="{DynamicResource PrimaryBackgroundColor}" >
+        Title="SignUp" Height="600" Width="400" WindowStyle="None"
+        Background="{DynamicResource PrimaryBackgroundColor}"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.1*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
-        <Grid Background="{DynamicResource PrimaryBackgroundColor}" MouseDown="Grid_MouseDown">
-            <Button HorizontalAlignment="Right" Margin="2" Content="{DynamicResource close}" Tag="IsCloseButton" Click="Button_Close" Style="{StaticResource IconButtonsStyle}"/>
-            <Button HorizontalAlignment="Right" Margin="2 2 30 2" Style="{DynamicResource IconButtonsStyle}" Content="{DynamicResource minimize}" Click="Button_Minimize" />
+        <Grid Background="{DynamicResource PrimaryBackgroundColor}" 
+              MouseDown="Grid_MouseDown">
+            <Button HorizontalAlignment="Right" 
+                    Margin="2" Content="{DynamicResource close}" 
+                    Tag="IsCloseButton" Click="Button_Close" 
+                    Style="{StaticResource IconButtonsStyle}"/>
+            <Button 
+                HorizontalAlignment="Right" 
+                Margin="2 2 30 2" 
+                Style="{DynamicResource IconButtonsStyle}" 
+                Content="{DynamicResource minimize}" 
+                Click="Button_Minimize" />
         </Grid>
-        <Border Padding="10" VerticalAlignment="Center" Background="{DynamicResource PrimaryBackgroundColor}" CornerRadius="15" Grid.Row="1"  MouseDown="Border_MouseDown" Margin="10 0 10 0">
+        <Border 
+            Padding="10" 
+            VerticalAlignment="Center" 
+            Background="{DynamicResource PrimaryBackgroundColor}" 
+            CornerRadius="15" 
+            Grid.Row="1" 
+            MouseDown="Border_MouseDown" 
+            Margin="10 0 10 0">
             <StackPanel>
-                <TextBlock Margin="0 0 0 20" FontSize="30" Foreground="{DynamicResource PrimaryTextColor}" Text="Sign Up" TextAlignment="Center"/>
+                <TextBlock Margin="0 0 0 20" 
+                           FontSize="30" 
+                           Foreground="{DynamicResource PrimaryTextColor}" 
+                           Text="Sign Up" 
+                           TextAlignment="Center"/>
 
-                <Border x:Name="LoginBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="{DynamicResource SecundaryBackgroundColor}" Margin="0 0 0 20">
+                <Border x:Name="LoginBorder" 
+                        BorderBrush="Gray" 
+                        BorderThickness="1"  
+                        CornerRadius="5" 
+                        Background="{DynamicResource SecundaryBackgroundColor}" 
+                        Margin="0 0 0 20">
                     <Grid Margin="7 9">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                        <TextBlock x:Name="textLogin" MouseDown="textLogin_MouseDown" Text="Login" Style="{StaticResource textHint}" Foreground="{DynamicResource PrimaryTextColor}" Grid.Column="1" Margin="9,0,-2,-1"/>
-                        <TextBox x:Name="login" MaxLength="60" TextChanged="txtLogin_TextChanged" Style="{StaticResource textBox}" Foreground="{DynamicResource PrimaryTextColor}" Background="{DynamicResource SecundaryBackgroundColor}"/>
+                        <TextBlock x:Name="textLogin" 
+                                   MouseDown="textLogin_MouseDown" 
+                                   Text="Login" Style="{StaticResource textHint}" 
+                                   Foreground="{DynamicResource PrimaryTextColor}" 
+                                   Grid.Column="1" Margin="9,0,-2,-1"/>
+                        <TextBox x:Name="LoginTextBox" 
+                                 MaxLength="60" 
+                                 TextChanged="txtLogin_TextChanged" 
+                                 Style="{StaticResource textBox}" 
+                                 Foreground="{DynamicResource PrimaryTextColor}"
+                                 Background="{DynamicResource SecundaryBackgroundColor}"/>
                     </Grid>
                 </Border>
-                <TextBlock x:Name="LoginError" Visibility="Collapsed" Text="Login is exist" FontSize="13" Foreground="DarkRed" Margin="0 0 0 20"/>
 
-                <Border BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="{DynamicResource SecundaryBackgroundColor}" Margin="0 0 0 20">
+                <Border BorderBrush="Gray" 
+                        BorderThickness="1"  
+                        CornerRadius="5" 
+                        Background="{DynamicResource SecundaryBackgroundColor}" 
+                        Margin="0 0 0 20"
+                        x:Name="NameBorder">
                     <Grid Margin="7 9">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                        <TextBlock x:Name="textName" MouseDown="textName_MouseDown" Text="Name" Style="{StaticResource textHint}" Foreground="{DynamicResource PrimaryTextColor}" Grid.Column="1" Margin="9,0,-2,-1"/>
-                        <TextBox x:Name="userName" MaxLength="60" TextChanged="txtName_TextChanged" Style="{StaticResource textBox}" Foreground="{DynamicResource PrimaryTextColor}" Background="{DynamicResource SecundaryBackgroundColor}"/>
+                        <TextBlock x:Name="textName" 
+                                   MouseDown="textName_MouseDown" 
+                                   Text="Name" Style="{StaticResource textHint}" 
+                                   Foreground="{DynamicResource PrimaryTextColor}" 
+                                   Grid.Column="1" 
+                                   Margin="9,0,-2,-1"/>
+                        <TextBox x:Name="NameTextBox" 
+                                 MaxLength="60" 
+                                 TextChanged="txtName_TextChanged" 
+                                 Style="{StaticResource textBox}" 
+                                 Foreground="{DynamicResource PrimaryTextColor}" 
+                                 Background="{DynamicResource SecundaryBackgroundColor}"/>
                     </Grid>
                 </Border>
-                <Border BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="{DynamicResource SecundaryBackgroundColor}" Margin="0 0 0 20">
+                <Border BorderBrush="Gray" 
+                        BorderThickness="1"  
+                        CornerRadius="5" 
+                        Background="{DynamicResource SecundaryBackgroundColor}"
+                        Margin="0 0 0 20"
+                        x:Name="SurnameBorder">
                     <Grid Margin="7 9">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                        <TextBlock x:Name="textSurname" MouseDown="textSurname_MouseDown" Text="Surname" Style="{StaticResource textHint}" Foreground="{DynamicResource PrimaryTextColor}" Grid.Column="1" Margin="9,0,-2,-1"/>
-                        <TextBox x:Name="userSurname" MaxLength="60" TextChanged="txtSurname_TextChanged" Style="{StaticResource textBox}" Foreground="{DynamicResource PrimaryTextColor}" Background="{DynamicResource SecundaryBackgroundColor}"/>
+                        <TextBlock x:Name="textSurname" 
+                                   MouseDown="textSurname_MouseDown" 
+                                   Text="Surname" Style="{StaticResource textHint}" 
+                                   Foreground="{DynamicResource PrimaryTextColor}" 
+                                   Grid.Column="1" 
+                                   Margin="9,0,-2,-1"/>
+                        <TextBox x:Name="SurnameTextBox" 
+                                 MaxLength="60" 
+                                 TextChanged="txtSurname_TextChanged" 
+                                 Style="{StaticResource textBox}" 
+                                 Foreground="{DynamicResource PrimaryTextColor}"
+                                 Background="{DynamicResource SecundaryBackgroundColor}"/>
                     </Grid>
                 </Border>
-                <Border x:Name="EmailBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="{DynamicResource SecundaryBackgroundColor}" Margin="0 0 0 20">
+                <Border x:Name="EmailBorder"
+                        BorderBrush="Gray" 
+                        BorderThickness="1" 
+                        CornerRadius="5" 
+                        Background="{DynamicResource SecundaryBackgroundColor}"
+                        Margin="0 0 0 20">
                     <Grid Margin="7 9">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                        <TextBlock x:Name="textEmail" MouseDown="textEmail_MouseDown" Text="Email" Style="{StaticResource textHint}" Foreground="{DynamicResource PrimaryTextColor}" Grid.Column="1" Margin="9,0,-2,-1"/>
-                        <TextBox x:Name="userEmail" MaxLength="60" TextChanged="txtEmail_TextChanged" Style="{StaticResource textBox}" Foreground="{DynamicResource PrimaryTextColor}" Background="{DynamicResource SecundaryBackgroundColor}"/>
+                        <TextBlock x:Name="textEmail"
+                                   MouseDown="textEmail_MouseDown" 
+                                   Text="Email" Style="{StaticResource textHint}"
+                                   Foreground="{DynamicResource PrimaryTextColor}"
+                                   Grid.Column="1" Margin="9,0,-2,-1"/>
+                        <TextBox x:Name="EmailTextBox" 
+                                 MaxLength="60" 
+                                 TextChanged="txtEmail_TextChanged"
+                                 Style="{StaticResource textBox}"
+                                 Foreground="{DynamicResource PrimaryTextColor}"
+                                 Background="{DynamicResource SecundaryBackgroundColor}"/>
                     </Grid>
                 </Border>
                 
-                <TextBlock x:Name="EmailError" Visibility="Collapsed" Text="Email is exist" FontSize="13" Foreground="DarkRed" Margin="0 0 0 20"/>
-                <TextBlock x:Name="EmailError2" Visibility="Collapsed" Text="Isn't email" FontSize="13" Foreground="DarkRed" Margin="0 0 0 20"/>
-                <Border x:Name="PasswordBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="{DynamicResource SecundaryBackgroundColor}" Margin="0 0 0 5">
+
+                <Border x:Name="PasswordBorder"
+                        BorderBrush="Gray"
+                        BorderThickness="1" 
+                        CornerRadius="5" 
+                        Background="{DynamicResource SecundaryBackgroundColor}"
+                        Margin="0 0 0 5">
+
                     <Grid Margin="7 9">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                        <TextBlock x:Name="textPassword" MouseDown="textPassword_MouseDown" Text="Password" Style="{StaticResource textHint}" Foreground="{DynamicResource PrimaryTextColor}" Grid.Column="1" Margin="9,0,-2,-1" TextInput="textPassword_TextInput"  DataContextChanged="textPassword_DataContextChanged"/>
-                        <PasswordBox x:Name="userPassword" MaxLength="60" PasswordChanged="userPassword_PasswordChanged" Style="{StaticResource textBox}" Foreground="{DynamicResource PrimaryTextColor}" Background="{DynamicResource SecundaryBackgroundColor}"/>
+                        <TextBlock x:Name="textPassword" 
+                                   MouseDown="textPassword_MouseDown" 
+                                   Text="Password" 
+                                   Style="{StaticResource textHint}" 
+                                   Foreground="{DynamicResource PrimaryTextColor}" 
+                                   Grid.Column="1" 
+                                   Margin="9,0,-2,-1" />
+                        <PasswordBox x:Name="PasswordTextBox"
+                                     MaxLength="60" 
+                                     PasswordChanged="userPassword_PasswordChanged"
+                                     Style="{StaticResource textBox}"
+                                     Foreground="{DynamicResource PrimaryTextColor}" 
+                                     Background="{DynamicResource SecundaryBackgroundColor}"/>
                     </Grid>
                 </Border>
-                <TextBlock x:Name="PasswordError" Visibility="Collapsed" Text="Password isn't strong" FontSize="13" Foreground="DarkRed" Margin="0 0 0 5"/>
-
-                <Border Padding="10" Margin="5 0 5 20" VerticalAlignment="Center" Background="{DynamicResource SecundaryBackgroundColor}" CornerRadius="8">
+                <Border Padding="10" Margin="5 0 5 20" 
+                        VerticalAlignment="Center"
+                        Background="{DynamicResource SecundaryBackgroundColor}"
+                        CornerRadius="8">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -90,19 +186,80 @@
                             <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <TextBlock x:Name="Characters" Foreground="{DynamicResource PrimaryTextColor}" Text="-Password must contain at least 8 characters" Grid.Row="0"/>
-                        <TextBlock x:Name="Number" Foreground="{DynamicResource PrimaryTextColor}" Text="-Password must contain at least one number" Grid.Row="1"/>
-                        <TextBlock x:Name="Special" Foreground="{DynamicResource PrimaryTextColor}" Text="-Password must contain at least one special character" Grid.Row="2"/>
-                        <TextBlock x:Name="Capital" Foreground="{DynamicResource PrimaryTextColor}" Text="-Password must contain at least one capital letter" Grid.Row="3"/>
+                        <TextBlock x:Name="Characters"
+                                   Foreground="{DynamicResource PrimaryTextColor}"
+                                   Text="-Password must contain at least 8 characters"
+                                   Grid.Row="0"/>
+                        <TextBlock x:Name="Number"
+                                   Foreground="{DynamicResource PrimaryTextColor}"
+                                   Text="-Password must contain at least one number"
+                                   Grid.Row="1"/>
+                        <TextBlock x:Name="Special" 
+                                   Foreground="{DynamicResource PrimaryTextColor}"
+                                   Text="-Password must contain at least one special character" 
+                                   Grid.Row="2"/>
+                        <TextBlock x:Name="Capital" 
+                                   Foreground="{DynamicResource PrimaryTextColor}"
+                                   Text="-Password must contain at least one capital letter"
+                                   Grid.Row="3"/>
                     </Grid>
                 </Border>
-                <Button x:Name="createAccount" Content="Sign Up" Click="createAccount_Click" Style="{StaticResource mainButton}" Margin="0 0 0 5"/>
-                <TextBlock x:Name="FieldsEmpty" Visibility="Collapsed" TextAlignment="Center" Text="Fields is empty" FontSize="13" Foreground="DarkRed" Margin="0 0 0 5"/>
-                <Button x:Name="cancelButton" VerticalAlignment="Center" HorizontalAlignment="Center"  Background="{x:Null}" BorderBrush="{x:Null}">
-                    <Button.Content>
-                        <TextBlock Text="Cancel" Foreground="{DynamicResource PrimaryTextColor}" TextDecorations="Underline"/>
-                    </Button.Content>
-                </Button>
+                <!--
+                Border infoBorder = new Border();
+            infoBorder.Background = SetColor("#d32f2f");
+            infoBorder.CornerRadius = new CornerRadius(8);
+            infoBorder.BorderThickness = new Thickness(1);
+            infoBorder.Margin = new Thickness(10);
+                -->
+                <TextBlock
+                x:Name="ErrorText"
+                TextAlignment="Left"
+                FontSize="13"
+                Margin="2"
+                Foreground="DarkRed"
+                Text="*Test Error"
+                FontWeight="DemiBold"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border
+                        Grid.Column="0"
+                        Background="{DynamicResource PrimaryTextColor}"
+                        BorderThickness="2"
+                        CornerRadius="8"
+                        Margin="2">
+                        <Button x:Name="createAccount"
+                            Background="{DynamicResource PrimaryTextColor}"
+                            Foreground="{DynamicResource PrimaryBackgroundColor}"
+                                BorderThickness="0"
+                                Margin="2"
+                                FontSize="18"
+                            Content="Sign Up" 
+                            Click="createAccount_Click"
+                                MouseEnter="createAccount_MouseEnter"
+                                MouseLeave="createAccount_MouseLeave"/>
+                    </Border>
+                    
+                    <Border
+                         Grid.Column="1"
+                         Background="{DynamicResource SecundaryBackgroundColor}"
+                        BorderThickness="2"
+                        CornerRadius="8"
+                        Margin="2">
+                        <Button x:Name="cancelButton"
+                                 Background="{DynamicResource SecundaryBackgroundColor}"
+                            Foreground="{DynamicResource PrimaryTextColor}"
+                                BorderThickness="0"
+                                Margin="2"
+                                FontSize="18"
+                            Click="cancelClick"
+                            Content="Cancel">
+                        </Button>
+                    </Border>
+                </Grid>
+                
             </StackPanel>
         </Border>
 

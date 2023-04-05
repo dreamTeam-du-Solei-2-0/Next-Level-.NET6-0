@@ -14,7 +14,6 @@ namespace Next_Level.Entity
         public Guid AccountId { get; set; }
         public String Surname { get;set; }
         public String Name { get;set; }
-        public String Secname { get; set; }
         public String Phone { get; set; }
         public String Email { get; set; }
         public DateTime? BirthDate { get; set; }
@@ -26,7 +25,6 @@ namespace Next_Level.Entity
             UserId = Guid.NewGuid();
             Surname = null;
             Name = null;
-            Secname = null;
             BirthDate = null;
             Phone = null;
             Email = null;
@@ -38,7 +36,6 @@ namespace Next_Level.Entity
             UserId = reader.GetGuid("UserId");
             Surname = reader.GetString("Surname");
             Name = reader.GetString("Name");
-            Secname = reader.GetString("Secname");
             Phone = reader.GetString("Phone");
             Email = reader.GetString("Email");
             BirthDate = reader.GetValue("BirthDate") == DBNull.Value
