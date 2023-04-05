@@ -6,6 +6,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Windows;
 
 namespace Next_Level.ContextData
 {
@@ -16,7 +18,13 @@ namespace Next_Level.ContextData
         internal AccountApi Accounts { get; set; }
         public DataContext()
         {
-            connection = new(NextLevelPath.ConnectionString);
+            string db_path = System.IO.Path.GetFullPath(NextLevelPath.DB);
+            string temp = db_path.Substring(db_path.IndexOf("\\bin"));
+            db_path = db_path.Replace(temp, String.Empty);
+            db_path = Path.Combine(db_path, NextLevelPath.DB);
+            db_path = Path.Combine(db_path, "NextLevelDB.mdf");
+            String connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|;Integrated Security=True".Replace("|DataDirectory|", db_path);
+            connection = new(connectionString);
             try
             {
                 connection.Open();
