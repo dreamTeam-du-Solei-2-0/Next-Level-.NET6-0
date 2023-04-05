@@ -96,7 +96,7 @@ namespace Next_Level.ContextData
                 };
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
-                    accountsList.Add(new(reader));
+                    accountsList.Add(new(reader) { dataContext = this.context });
             }
             catch (Exception ex)
             {

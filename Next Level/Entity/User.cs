@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Next_Level.ContextData;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -44,6 +45,15 @@ namespace Next_Level.Entity
             DeleteDt = reader.GetValue("DeleteDt") == DBNull.Value
                 ? null
                 : reader.GetDateTime("DeleteDt");
+        }
+
+        internal DataContext? dataContext;
+        public Account? Account
+        {
+            get => dataContext?
+                .Accounts
+                .GetAccounts()
+                .Find(a => a.AccountId == this.AccountId);
         }
     }
 }

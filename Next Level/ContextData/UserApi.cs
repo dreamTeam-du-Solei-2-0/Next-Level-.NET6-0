@@ -35,7 +35,7 @@ namespace Next_Level.ContextData
                 };
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
-                    users.Add(new(reader));
+                    users.Add(new(reader) { dataContext = this.context });
             }
             catch (Exception ex)
             {
