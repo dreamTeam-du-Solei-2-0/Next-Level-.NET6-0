@@ -16,6 +16,8 @@ namespace Next_Level.ContextData
         private SqlConnection connection;
         internal UserApi Users { get; set; }
         internal AccountApi Accounts { get; set; }
+        internal CategoryApi Categories { get; set; }
+        internal ProductApi Products { get; set; }
         public DataContext()
         {
             string db_path = System.IO.Path.GetFullPath(NextLevelPath.DB);
@@ -41,6 +43,8 @@ namespace Next_Level.ContextData
             }
             Users = new(connection, this);
             Accounts = new(connection, this);
+            Categories = new(connection, this);
+            Products = new(connection, this);
         }
     }
 }

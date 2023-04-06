@@ -35,6 +35,7 @@ namespace Next_Level.Entity
         public User(SqlDataReader reader)
         {
             UserId = reader.GetGuid("UserId");
+            AccountId = reader.GetGuid("AccountId");
             Surname = reader.GetString("Surname");
             Name = reader.GetString("Name");
             Phone = reader.GetString("Phone");

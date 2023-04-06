@@ -1,0 +1,5 @@
+﻿CREATE TABLE Categories(
+[CategoryId] UNIQUEIDENTIFIER PRIMARY KEY NOT NULL,
+[Name]			NVARCHAR(50)									NOT NULL,
+[DeleteDt]		DATETIME
+)
