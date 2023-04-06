@@ -7,9 +7,52 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="EditCategories" Height="Auto" Width="Auto" Background="{DynamicResource SecundaryBackgroundColor}">
-    <Border Width="Auto" Height="Auto" BorderThickness="1"  Background="AliceBlue"  CornerRadius="8"  >
-        <Grid Margin="2">
-            <TextBlock Text="EditCategories" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="100" Foreground="{DynamicResource PrimaryTextColor}"/>
+    <Border Width="Auto" Height="Auto" BorderThickness="1"  Background="AliceBlue"  CornerRadius="8"  x:Name="MainWindow">
+        <Grid Margin="2" x:Name="EditWindow">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Foreground="{DynamicResource PrimaryTextColor}" 
+                               FontSize="20"  
+                               Text="Edit Product Category" 
+                               TextAlignment="Center"
+                       Grid.Row="0"/>
+            <StackPanel Grid.Row="1">
+                <ComboBox x:Name="comboCategory"
+                              Foreground="{DynamicResource PrimaryBlackColor}"
+                              Background="{DynamicResource PrimaryBlackColor}"
+                              Margin="50 5 50 5"
+                      Grid.Row="1"/>
+                <TextBox x:Name="productCategory" 
+                             Foreground="{DynamicResource PrimaryTextColor}" 
+                             Background="{DynamicResource PrimaryBackgroundColor}" 
+                             TextAlignment="Center" 
+                             MaxLength="20" 
+                             TextWrapping="Wrap" 
+                             FontSize="15"
+                             Margin="50 5 50 5"
+                     Grid.Row="2"/>
+                <Border
+                        Grid.Column="0"
+                        Background="{DynamicResource PrimaryTextColor}"
+                        BorderThickness="2"
+                        CornerRadius="8"
+                        Margin="2">
+                    <Button x:Name="editCategory"
+                            Background="{DynamicResource PrimaryTextColor}"
+                            Foreground="{DynamicResource PrimaryBackgroundColor}"
+                                BorderThickness="0"
+                                Margin="2"
+                                FontSize="18"
+                            Content="Save" 
+                            Click="editCategory_Click"/>
+                </Border>
+            </StackPanel>
+           
+
+            
         </Grid>
     </Border>
 </Page>

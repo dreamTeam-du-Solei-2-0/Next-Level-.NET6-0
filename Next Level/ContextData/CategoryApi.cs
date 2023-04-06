@@ -1,6 +1,7 @@
 ﻿using Next_Level.Entity;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,36 @@ namespace Next_Level.ContextData
             this.connection = _connection;
             categoryList = null;
         }
+        public bool Update(Entity.Category category)
+        {
+            try
+            {
+                using SqlCommand cmd = new()
+                {
+                    Connection = connection,
+                    CommandText = @"UPDATE Categories
+                                    SET Name = @name
+                                    WHERE CategoryId = @categoryId;"
+                };
+                cmd.Parameters.AddWithValue("@categoryId", category.CategoryId);
+                cmd.Parameters.AddWithValue("@name", category.Name);
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+                String msg =
+                    DateTime.Now + ": " +
+                    this.GetType().Name +
+                    System.Reflection.MethodBase.GetCurrentMethod()?.Name +
+                    " " + ex.Message;
 
+                // TODO: LOG
+                App.Logger.Log(msg, "SEVERE");
+                return false;
+            }
+            return true;
+        }
         public bool Delete(Entity.Category category)
         {
             try
