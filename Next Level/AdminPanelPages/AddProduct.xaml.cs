@@ -79,11 +79,12 @@ namespace Next_Level.AdminPanelPages
         {
             productName.Text = string.Empty;
             productCategory.Text = string.Empty;
-
+            createNew.IsChecked = false;
+            createNew.IsEnabled = true;
             productPrice.Text = string.Empty;
             productCount.Text = string.Empty;
             productDescription.Text = string.Empty;
-
+            comboCategory.SelectedIndex = 0;
             gridPhoto.Children.Clear();
         }
 

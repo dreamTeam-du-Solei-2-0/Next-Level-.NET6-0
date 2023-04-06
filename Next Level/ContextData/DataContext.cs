@@ -48,9 +48,5 @@ namespace Next_Level.ContextData
             Products = new(connection, this);
             Feedbacks = new(connection, this);
         }
-        public void CloseConnection()
-        {
-            connection.Close();
-        }
     }
 }

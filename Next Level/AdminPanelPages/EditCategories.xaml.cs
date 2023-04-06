@@ -76,8 +76,6 @@ namespace Next_Level.AdminPanelPages
             {
                 category.Name = productCategory.Text;
                 dataContext.Categories.Update(category);
-                dataContext.CloseConnection();
-                dataContext = new();
                 comboCategory.Items.Clear();
                 loadCategories();
             }

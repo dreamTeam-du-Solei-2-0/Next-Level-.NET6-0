@@ -456,8 +456,6 @@ namespace Next_Level.AdminPanelPages
                 dataContext.Products.Update(product);
                 clearFields();
                 homeView.Visibility = Visibility.Visible;
-                dataContext.CloseConnection();
-                dataContext = new();
                 LoadProducts();
             }
         }

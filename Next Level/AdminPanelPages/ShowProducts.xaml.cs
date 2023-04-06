@@ -29,7 +29,7 @@ namespace Next_Level.AdminPanelPages
     {
         WrapPanel wrap = null;
 
-        private DataContext dataContext;
+        private readonly DataContext dataContext;
         List<Category> categories;
 
         public ShowProducts()
@@ -41,7 +41,6 @@ namespace Next_Level.AdminPanelPages
 
         public void LoadProducts()
         {
-       
             ScrollViewer scroll = createScroll();
             StackPanel myStack = createStackPanel();
             scroll.Content = myStack;
@@ -94,8 +93,6 @@ namespace Next_Level.AdminPanelPages
                 }
             }
             dataContext.Products.Delete(Product);
-            dataContext.CloseConnection();
-            dataContext = new();
             category = dataContext.Categories.GetCategory(category_name);
             if (category.Products.Count == 0)
                 dataContext.Categories.Delete(category);

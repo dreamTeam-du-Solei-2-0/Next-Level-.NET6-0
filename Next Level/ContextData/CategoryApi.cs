@@ -35,6 +35,7 @@ namespace Next_Level.ContextData
                 cmd.Parameters.AddWithValue("@name", category.Name);
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
+                categoryList = null;
             }
             catch (Exception ex)
             {
@@ -64,6 +65,7 @@ namespace Next_Level.ContextData
                 cmd.Parameters.AddWithValue("@id", category.CategoryId);
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
+                categoryList = null;
             }
             catch (Exception ex)
             {

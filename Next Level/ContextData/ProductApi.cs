@@ -49,6 +49,7 @@ namespace Next_Level.ContextData
                 cmd.Parameters.AddWithValue("@count", product.Count);
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
+                productList = null;
             }
             catch (Exception ex)
             {
@@ -78,6 +79,7 @@ namespace Next_Level.ContextData
                 cmd.Parameters.AddWithValue("@id", product.ProductId);
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
+                productList = null;
             }
             catch (Exception ex)
             {
