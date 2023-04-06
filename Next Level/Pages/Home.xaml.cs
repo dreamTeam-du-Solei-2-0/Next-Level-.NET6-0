@@ -1,4 +1,6 @@
 ﻿using Next_Level.Classes;
+using Next_Level.ContextData;
+using Next_Level.Entity;
 using Next_Level.Interfaces;
 using System;
 using System.Collections;
@@ -22,85 +24,88 @@ namespace Next_Level.Pages
 {
     public partial class Home : Page
     {
-        public string current_user { get; set; }
-        string path_currentUser = NextLevelPath.CURRENT_USER;
-        IFile file;
-        ProductList products = null;
+        WrapPanel wrap = null;
 
-        WrapPanel wrap=null;
-
-        List<String> categories;
+        private DataContext dataContext;
+        List<Category> categories;
 
         public Home()
         {
             InitializeComponent();
-            file = new BinnaryFile(path_currentUser);
-            this.current_user = file.Load<string>();
+            dataContext = new();
             LoadProducts();
-            
         }
 
         public void LoadProducts()
         {
+
             ScrollViewer scroll = createScroll();
             StackPanel myStack = createStackPanel();
             scroll.Content = myStack;
             homeView.Child = scroll;
-            products = new ProductList();
-
-            file = new XmlFormat(NextLevelPath.CATEGORIES_PATH);
-            categories = file.Load<List<string>>();
-            if (categories == null)
-                categories = new List<string>();
-
-            if (products.fileLoad&&products.products.Count!=0)
+            categories = dataContext.Categories.GetCategories();
+            int idProduct = 0;
+            if (categories.Count != 0)
             {
-                if (categories.Count != 0)
+                foreach (var category in categories)
                 {
-                    foreach(var category in categories)
+                    if (category.Products.Count != 0)
                     {
-                        if (products.isHaveCategory(category))
-                        {
-                            myStack.Children.Add(createCategory(category));
-                        }
+                        myStack.Children.Add(createCategory(category.Name));
                         wrap = new WrapPanel();
                         myStack.Children.Add(wrap);
-                        foreach (var product in products)
+                        foreach (var product in category.Products)
                         {
-                            if(product.Category==category)
-                                wrap.Children.Add(CreateProduct(product, (SolidColorBrush)FindResource("TertiaryBackgroundColor"), (SolidColorBrush)FindResource("PrimaryTextColor")));
+                            wrap.Children.Add(CreateProduct(product, category, (SolidColorBrush)FindResource("TertiaryBackgroundColor"), (SolidColorBrush)FindResource("PrimaryTextColor")));
+                            idProduct++;
                         }
-                    }
-                }
-                else
-                {
-                    wrap = new WrapPanel();
-                    myStack.Children.Add(wrap);
-                    foreach (var product in products)
-                    {
-                        wrap.Children.Add(CreateProduct(product, (SolidColorBrush)FindResource("TertiaryBackgroundColor"), (SolidColorBrush)FindResource("PrimaryTextColor")));
                     }
                 }
             }
         }
-
         #region EVENTS
+
+        //private void button_InfoProduct(object sender, RoutedEventArgs e)
+        //{
+        //    Button button = (Button)sender;
+        //    var index = button.Name.IndexOf("_");
+        //    var category_name = button.Name.Substring(0, index);
+        //    var category = dataContext.Categories.GetCategory(category_name);
+        //    Entity.Product Product = null;
+        //    foreach (var product in category.Products)
+        //    {
+        //        if (product.ProductId.ToString().Contains(button.Name.Substring(index + 1)))
+        //        {
+        //            Product = product;
+        //            break;
+        //        }
+        //    }
+        //    dataContext.Products.Delete(Product);
+        //    dataContext.CloseConnection();
+        //    dataContext = new();
+        //    category = dataContext.Categories.GetCategory(category_name);
+        //    if (category.Products.Count == 0)
+        //        dataContext.Categories.Delete(category);
+        //    LoadProducts();
+        //}
+
         private void button_BuyProduct(object sender, RoutedEventArgs e)
         {
-            Button button = (Button)sender;
-            Frame myFrame = createFrame();
-            myFrame.Navigate(new Order(button.Name.Remove(button.Name.Length - 1),this));
-            homeView.Child = myFrame;
+            //Button button = (Button)sender;
+            //Frame myFrame = createFrame();
+            //myFrame.Navigate(new Order(button.Name.Remove(button.Name.Length - 1), this));
+            //homeView.Child = myFrame;
         }
 
         private void button_InfoProduct(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
+            var index = button.Name.IndexOf("_");
+            var id = button.Name.Substring(index + 1);
             Frame myFrame = createFrame();
-            myFrame.Navigate(new ProductInfo(button.Name.Remove(button.Name.Length-1)));
+            myFrame.Navigate(new ProductInfo(id));
             homeView.Child = myFrame;
         }
-        
 
 
         #endregion
@@ -134,7 +139,6 @@ namespace Next_Level.Pages
             frame.Background = (SolidColorBrush)FindResource("PrimaryBackgroundColor");
             return frame;
         }
-
         StackPanel createStackPanel()
         {
             StackPanel stackPanel = new StackPanel();
@@ -160,22 +164,18 @@ namespace Next_Level.Pages
             return category;
         }
 
-        BitmapImage loadPhoto(string path)
+        BitmapImage loadPhoto(byte[] photo)
         {
-            BitmapImage img = new BitmapImage();
-            if (File.Exists(path))
-            {
-                img.BeginInit();
-                img.UriSource = new Uri(path,UriKind.RelativeOrAbsolute);
-                img.DecodePixelWidth = 120;
-                img.DecodePixelHeight = 120;
-                img.EndInit();
-                return img;
-            }
-            return null;
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = new MemoryStream(photo);
+            bitmapImage.DecodePixelWidth = 120;
+            bitmapImage.DecodePixelHeight = 120;
+            bitmapImage.EndInit();
+            return bitmapImage;
         }
 
-        Border CreateProduct(Product product, SolidColorBrush gridColor, SolidColorBrush textColor)
+        Border CreateProduct(Entity.Product product, Category category, SolidColorBrush gridColor, SolidColorBrush textColor)
         {
             int ROWS_COUNT = 6;
             int COLUMNS_COUNT = 2;
@@ -238,20 +238,16 @@ namespace Next_Level.Pages
             categoryBorder.CornerRadius = new CornerRadius(8);
             categoryBorder.Margin = new Thickness(2);
 
-            TextBlock category = new TextBlock();
-            if (product.Category != String.Empty)
-                category.Text = product.Category;
-            else
-                category.Text = "#CATEGORY#";
+            TextBlock Block = new TextBlock();
+            Block.Text = category.Name;
+            Block.Margin = new Thickness(3);
+            Block.FontSize = 12;
+            Block.TextWrapping = TextWrapping.Wrap;
+            Block.VerticalAlignment = VerticalAlignment.Center;
+            Block.TextAlignment = TextAlignment.Center;
+            Block.Foreground = textColor;
 
-            category.Margin = new Thickness(3);
-            category.FontSize = 12;
-            category.TextWrapping = TextWrapping.Wrap;
-            category.VerticalAlignment = VerticalAlignment.Center;
-            category.TextAlignment = TextAlignment.Center;
-            category.Foreground = textColor;
-
-            categoryBorder.Child = category;
+            categoryBorder.Child = Block;
             //Добавляю в строку
             Grid.SetRow(categoryBorder, 0);
             //Растягиваю на два столбца
@@ -259,10 +255,8 @@ namespace Next_Level.Pages
             //Добавляю текст в сетку
             myGrid.Children.Add(categoryBorder);
 
-            string photoBD = System.IO.Path.GetFullPath(NextLevelPath.STOREBD_PATH);
-            photoBD = System.IO.Path.Combine(photoBD, product.productName);
             //Загрузка фото
-            var productPhoto = loadPhoto(System.IO.Path.Combine(photoBD, product.productPhoto));
+            var productPhoto = loadPhoto(product.Photo);
             if (productPhoto != null)
             {
                 Image imageBox = new Image();
@@ -284,7 +278,7 @@ namespace Next_Level.Pages
 
             //Items count
             TextBlock itemsCount = new TextBlock();
-            itemsCount.Text = $"Items count: {product.productCount}";
+            itemsCount.Text = $"Items count: {product.Count}";
             itemsCount.FontSize = 12;
             itemsCount.TextWrapping = TextWrapping.Wrap;
             itemsCount.VerticalAlignment = VerticalAlignment.Center;
@@ -299,9 +293,7 @@ namespace Next_Level.Pages
 
             //Название товара
             TextBlock productName = new TextBlock();
-            if (product.productName != String.Empty)
-                productName.Text = product.productName;
-            else productName.Text = "#PRODUCT_NAME#";
+            productName.Text = product.Name;
             productName.FontSize = 15;
             productName.TextWrapping = TextWrapping.Wrap;
             productName.VerticalAlignment = VerticalAlignment.Center;
@@ -316,7 +308,7 @@ namespace Next_Level.Pages
 
             //Цена товара
             TextBlock price = new TextBlock();
-            price.Text = $"{product.productPrice} grn";
+            price.Text = $"{product.Price.ToString("0.00")} grn";
             price.TextAlignment = TextAlignment.Center;
             price.VerticalAlignment = VerticalAlignment.Center;
             price.FontSize = 15;
@@ -334,8 +326,9 @@ namespace Next_Level.Pages
             //Кнопка купить
             Button buyBut = new Button();
             buyBut.BorderThickness = new Thickness(0);
-            if (product.Id != string.Empty)
-                buyBut.Name = product.Id + "1";
+            var prodId = product.ProductId.ToString();
+            var index = prodId.IndexOf('-');
+            buyBut.Name = "_"+category.Name + "_" + prodId.Substring(0, index);
             buyBut.Content = "Buy";
             buyBut.Foreground = Brushes.White;
             buyBut.Background = SetColor("#15531C");
@@ -355,17 +348,17 @@ namespace Next_Level.Pages
             //Кнопка информация о товаре
             Button infoBut = new Button();
             infoBut.BorderThickness = new Thickness(0);
-            if (product.Id != string.Empty)
-                infoBut.Name = product.Id + "2";
-            infoBut.Content = "About";
+            infoBut.Name = category.Name + "_" + prodId.Substring(0, index);
+            infoBut.Content = "Info";
             infoBut.Foreground = Brushes.White;
             infoBut.Background = SetColor("#d32f2f");
             infoBut.Margin = new Thickness(2);
             infoBut.Foreground = Brushes.White;
             infoBut.Click += new RoutedEventHandler(button_InfoProduct);
             infoBorder.Child = infoBut;
-
-            if (product.productCount == 0)
+            Grid.SetRow(infoBorder, 5);
+            Grid.SetColumnSpan(infoBorder, 2);
+            if (product.Count == 0)
             {
                 itemsCount.Text = "Product is out";
                 itemsCount.Foreground = Brushes.DarkRed;
@@ -380,9 +373,6 @@ namespace Next_Level.Pages
             }
 
             myGrid.Children.Add(infoBorder);
-
-            
-
             //добавляю в рамку сетку
             border.Child = myGrid;
             return border;

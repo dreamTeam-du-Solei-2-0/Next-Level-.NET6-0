@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Next_Level.Classes;
+using Next_Level.ContextData;
 using Next_Level.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -26,26 +27,22 @@ namespace Next_Level
     public partial class ProductInfo : Page
     {
         IFile file;
-
-        User current_user;
-        Accounts accounts = new Accounts();
-        
-        ProductList _products;
-        Product product;
-
-        FeedbackList feedbacks;
+        private readonly DataContext dataContext;
+        Entity.Account current_user;
+        Entity.Product product = null;
 
         SolidColorBrush gridColor;
         SolidColorBrush textColor;
-
+        List<Entity.Product> productList;
         public ProductInfo(string id)
         {
             InitializeComponent();
+            dataContext = new();
             LoadCurrentUser();
-            LoadProductList();
             LoadProduct(id);
             LoadColors();
             LoadComments();
+           
         }
 
         #region LOAD_ALL_DATA
@@ -55,23 +52,26 @@ namespace Next_Level
         {
             string path_currentUser = NextLevelPath.CURRENT_USER;
             file = new BinnaryFile(path_currentUser);
-            current_user = accounts.getUserByLogin(file.Load<string>());
+            current_user = dataContext.Accounts.GetAccount(file.Load<string>());
         }
 
         //подгружает продукты из бд
-        void LoadProductList() => _products = new ProductList();
+        //void LoadProductList() => _products = new ProductList();
 
         //находит нужный продукт
         void LoadProduct(string id)
         {
-            product = _products.getProductById(id);
-            if (product == null)
-                product = new Product();
-            else
+            productList = dataContext.Products.GetProducts();
+            foreach (var prod in productList)
             {
-                LoadPriceDescription();
-                LoadImage();
+                if (prod.ProductId.ToString().Contains(id))
+                {
+                    product = prod;
+                    break;
+                }
             }
+            LoadPriceDescription();
+            LoadImage();
         }
 
         //загрузка цветов
@@ -84,38 +84,33 @@ namespace Next_Level
         //подгружает комментарии из бд
         void LoadComments()
         {
-            Coments.Children.Clear();
-            feedbacks = new FeedbackList(product.productName);
-            if(feedbacks.Count!=0)
-            {
-                foreach (var feedback in feedbacks)
-                {
-                    Coments.Children.Add(CreateGrid(feedback, gridColor, textColor));
-                }
-            }
+            //Coments.Children.Clear();
+            //feedbacks = new FeedbackList(product.productName);
+            //if(feedbacks.Count!=0)
+            //{
+            //    foreach (var feedback in feedbacks)
+            //    {
+            //        Coments.Children.Add(CreateGrid(feedback, gridColor, textColor));
+            //    }
+            //}
         }
 
         //подгружает описание и цену из бд
         void LoadPriceDescription()
         {
-            if (product.descriptionProduct == string.Empty)
+            if (product.Description == string.Empty)
                 Description.Text = "No description";
             else
-                Description.Text = product.descriptionProduct;
+                Description.Text = product.Description;
 
-            Price.Text = "Price: " + product.productPrice.ToString();
-            Count.Text = "Count: " + product.productCount.ToString();
+            Price.Text = "Price: " + product.Price.ToString("0.00");
+            Count.Text = "Count: " + product.Count.ToString();
         }
 
         //подгружает фото из бд
         void LoadImage()
         {
-            string target = NextLevelPath.STOREBD_PATH;
-            target = System.IO.Path.GetFullPath(target);
-            target = System.IO.Path.Combine(target, product.productName);
-            target = System.IO.Path.Combine(target, product.productPhoto);
-            if(File.Exists(target))
-                productImage.Source = loadPhoto(target);
+            productImage.Source = loadPhoto(product.Photo);
         }
 
         #endregion
@@ -126,14 +121,14 @@ namespace Next_Level
         {
             if (!string.IsNullOrEmpty(ComW.Text))
             {
-                Feedback feedback = new Feedback();
-                feedback.login = current_user.Login;
-                feedback.username = current_user.Name;
-                feedback.comment = ComW.Text;
-                feedback.date = $"{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}  {DateTime.Now.Hour}:{DateTime.Now.Minute}";
-                Coments.Children.Add(CreateGrid(feedback, gridColor, textColor));
-                SaveComments(feedback);
-                ComW.Clear();
+                //Feedback feedback = new Feedback();
+                //feedback.login = current_user.Login;
+                //feedback.username = current_user.Name;
+                //feedback.comment = ComW.Text;
+                //feedback.date = $"{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}  {DateTime.Now.Hour}:{DateTime.Now.Minute}";
+                //Coments.Children.Add(CreateGrid(feedback, gridColor, textColor));
+                //SaveComments(feedback);
+                //ComW.Clear();
             }
         }
         //оставить отзыв нажатием на Enter
@@ -144,48 +139,44 @@ namespace Next_Level
 
                 if (!string.IsNullOrEmpty(ComW.Text))
                 {
-                    Feedback feedback = new Feedback();
-                    feedback.login = current_user.Login;
-                    feedback.username = current_user.Name;
-                    feedback.comment = ComW.Text;
-                    feedback.date = $"{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}  {DateTime.Now.Hour}:{DateTime.Now.Minute}";
-                    Coments.Children.Add(CreateGrid(feedback, gridColor, textColor));
-                    SaveComments(feedback);
-                    ComW.Clear();
+                    //Feedback feedback = new Feedback();
+                    //feedback.login = current_user.Login;
+                    //feedback.username = current_user.Name;
+                    //feedback.comment = ComW.Text;
+                    //feedback.date = $"{DateTime.Today.Year}-{DateTime.Today.Month}-{DateTime.Today.Day}  {DateTime.Now.Hour}:{DateTime.Now.Minute}";
+                    //Coments.Children.Add(CreateGrid(feedback, gridColor, textColor));
+                    //SaveComments(feedback);
+                    //ComW.Clear();
                 }
             }
         }
 
         private void deleteFeedback(object sender, RoutedEventArgs e) 
         {
-            Button but = (Button)sender;
-            var feedback = feedbacks.getFeedbackById(but.Name);
-            feedbacks.RemoveCommentById(feedback);
-            LoadComments();
+            //Button but = (Button)sender;
+            //var feedback = feedbacks.getFeedbackById(but.Name);
+            //feedbacks.RemoveCommentById(feedback);
+            //LoadComments();
         }
         
         //Сохраняет комментарий
         void SaveComments(Feedback feedback)
         {
-            feedbacks.AddNewComment(feedback);
+            //feedbacks.AddNewComment(feedback);
         }
         #endregion
 
         #region CREATE_ELEMENTS
-        //загружает фото
-        BitmapImage loadPhoto(string path)
+
+        BitmapImage loadPhoto(byte[] photo)
         {
-            BitmapImage img = new BitmapImage();
-            if (File.Exists(path))
-            {
-                img.BeginInit();
-                img.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-                img.DecodePixelWidth = 200;
-                img.DecodePixelHeight = 200;
-                img.EndInit();
-                return img;
-            }
-            return null;
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = new MemoryStream(photo);
+            bitmapImage.DecodePixelWidth = 120;
+            bitmapImage.DecodePixelHeight = 120;
+            bitmapImage.EndInit();
+            return bitmapImage;
         }
 
         //Установка 16-ричного цвета

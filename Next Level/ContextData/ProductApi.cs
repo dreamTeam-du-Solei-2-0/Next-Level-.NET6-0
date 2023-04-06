@@ -21,7 +21,6 @@ namespace Next_Level.ContextData
             this.connection = _connection;
             productList = null;
         }
-
         public bool Update(Entity.Product product)
         {
             try
