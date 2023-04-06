@@ -21,6 +21,41 @@ namespace Next_Level.ContextData
             this.connection = _connection;
             accountsList = null;
         }
+
+        public bool Update(Entity.Account account)
+        {
+            try
+            {
+                using SqlCommand cmd = new()
+                {
+                    Connection = connection,
+                    CommandText = @"UPDATE Accounts
+                                    SET  
+                                    Login = @login, 
+                                    Password = @password
+                                    WHERE AccountId = @accountId;"
+                };
+                cmd.Parameters.AddWithValue("@accountId", account.AccountId);
+                cmd.Parameters.AddWithValue("@login", account.Login);
+                cmd.Parameters.AddWithValue("@password", account.Password);
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+                String msg =
+                    DateTime.Now + ": " +
+                    this.GetType().Name +
+                    System.Reflection.MethodBase.GetCurrentMethod()?.Name +
+                    " " + ex.Message;
+
+                // TODO: LOG
+                App.Logger.Log(msg, "SEVERE");
+                return false;
+            }
+            return true;
+        }
+
         public bool IsExist(string Login)
         {
             try
@@ -55,7 +90,7 @@ namespace Next_Level.ContextData
         }
         public Account GetAccount(String login)
         {
-            Account account = null;
+            Account account = new Account();
             try
             {
                 using SqlCommand cmd = new()
@@ -84,7 +119,6 @@ namespace Next_Level.ContextData
 
                 // TODO: LOG
                 App.Logger.Log(msg, "SEVERE");
-                return account;
             }
             return account;
         }

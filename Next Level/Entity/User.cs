@@ -15,8 +15,8 @@ namespace Next_Level.Entity
         public Guid AccountId { get; set; }
         public String Surname { get;set; }
         public String Name { get;set; }
-        public String Phone { get; set; }
-        public String Email { get; set; }
+        public String ?Phone { get; set; }
+        public String ?Email { get; set; }
         public DateTime? BirthDate { get; set; }
         public DateTime? DeleteDt { get; set; }
         
@@ -38,8 +38,12 @@ namespace Next_Level.Entity
             AccountId = reader.GetGuid("AccountId");
             Surname = reader.GetString("Surname");
             Name = reader.GetString("Name");
-            Phone = reader.GetString("Phone");
-            Email = reader.GetString("Email");
+            Phone = reader.GetValue("Phone") == DBNull.Value
+                ? null
+                :reader.GetString("Phone");
+            Email = reader.GetValue("Email") == DBNull.Value
+                ? null
+                : reader.GetString("Email");
             BirthDate = reader.GetValue("BirthDate") == DBNull.Value
                 ? null
                 : reader.GetDateTime("BirthDate");

@@ -41,8 +41,8 @@ namespace Next_Level.ContextData
                 App.Logger.Log(msg, "SEVERE");
                 throw new Exception("Context creation failed. See server logs for details");
             }
-            Users = new(connection, this);
             Accounts = new(connection, this);
+            Users = new(connection, this);
             Categories = new(connection, this);
             Products = new(connection, this);
         }

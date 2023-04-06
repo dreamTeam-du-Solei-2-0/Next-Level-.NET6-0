@@ -63,6 +63,8 @@ namespace Next_Level.Pages
                 else
                     EmailFormatCorrect = true;
             }
+            else
+                EmailFormatCorrect = true;
 
         }
         #region WINDOW_EVENTS
