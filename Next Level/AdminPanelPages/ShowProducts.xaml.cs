@@ -298,12 +298,6 @@ namespace Next_Level.AdminPanelPages
             Grid.SetColumnSpan(price, 2);
             myGrid.Children.Add(price);
 
-            Border buyBorder = new Border();
-            buyBorder.Background = SetColor("#15531C");
-            buyBorder.CornerRadius = new CornerRadius(8);
-            buyBorder.BorderThickness = new Thickness(1);
-            buyBorder.Margin = new Thickness(10);
-
             Border infoBorder = new Border();
             infoBorder.Background = SetColor("#d32f2f");
             infoBorder.CornerRadius = new CornerRadius(8);

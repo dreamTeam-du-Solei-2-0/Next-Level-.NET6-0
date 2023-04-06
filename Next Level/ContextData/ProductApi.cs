@@ -22,6 +22,49 @@ namespace Next_Level.ContextData
             productList = null;
         }
 
+        public bool Update(Entity.Product product)
+        {
+            try
+            {
+                using SqlCommand cmd = new()
+                {
+                    Connection = connection,
+                    CommandText = @"UPDATE Products
+                                    SET  
+                                    CategoryId = @categoryId, 
+                                    Photo = @photo, 
+                                    Description = @description, 
+                                    Price = @price, 
+                                    Count = @count,
+                                    Name = @name
+                                    WHERE ProductId = @productId;"
+                };
+                cmd.Parameters.AddWithValue("@productId", product.ProductId);
+                cmd.Parameters.AddWithValue("@categoryId", product.CategoryId);
+                SqlParameter parameter = new SqlParameter("@photo", SqlDbType.VarBinary);
+                parameter.Value = product.Photo;
+                cmd.Parameters.Add(parameter);
+                cmd.Parameters.AddWithValue("@name", product.Name);
+                cmd.Parameters.AddWithValue("@description", product.Description);
+                cmd.Parameters.AddWithValue("@price", product.Price);
+                cmd.Parameters.AddWithValue("@count", product.Count);
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+                String msg =
+                    DateTime.Now + ": " +
+                    this.GetType().Name +
+                    System.Reflection.MethodBase.GetCurrentMethod()?.Name +
+                    " " + ex.Message;
+
+                // TODO: LOG
+                App.Logger.Log(msg, "SEVERE");
+                return false;
+            }
+            return true;
+        }
         public bool Delete(Entity.Product product)
         {
             try

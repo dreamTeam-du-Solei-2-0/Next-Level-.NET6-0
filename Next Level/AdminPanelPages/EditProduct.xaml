@@ -6,10 +6,233 @@
       xmlns:local="clr-namespace:Next_Level.AdminPanelPages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="EditProduct" Height="Auto" Width="Auto" Background="Transparent">
-    <Border Width="Auto" Height="Auto" BorderThickness="1"  Background="{DynamicResource SecundaryBackgroundColor}"  CornerRadius="8"  >
-        <Grid Margin="2">
-            <TextBlock Text="EditProduct" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="100" Foreground="{DynamicResource PrimaryTextColor}"/>
+      Title="EditProduct" Height="Auto" Width="Auto" Background="{DynamicResource SecundaryBackgroundColor}">
+    <Border Width="Auto" Height="Auto" BorderThickness="1"  Background="AliceBlue"  CornerRadius="8"  >
+        <Grid>
+            <Grid Margin="2" x:Name="EditWindow">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.40*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.6*"/>
+                        <RowDefinition Height="0.9*"/>
+                        <RowDefinition Height="0.6*"/>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="0.5*"/>
+                        <RowDefinition Height="0.5*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <!--productName-->
+                    <StackPanel Grid.ColumnSpan="2">
+                        <TextBlock Foreground="{DynamicResource PrimaryTextColor}"  
+                               FontSize="15"
+                               Text="Product Name"
+                               TextAlignment="Center"/>
+                        <TextBox x:Name="productName" 
+                             Foreground="{DynamicResource PrimaryTextColor}"
+                             Background="{DynamicResource PrimaryBackgroundColor}" 
+                             TextAlignment="Center" 
+                             MaxLength="20" 
+                             TextWrapping="Wrap"
+                             FontSize="15" 
+                             Margin="50 5 50 5" 
+                             TextChanged="productName_TextChanged"/>
+                    </StackPanel>
+
+                    <!--productCategory-->
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                        <TextBlock Foreground="{DynamicResource PrimaryTextColor}" 
+                               FontSize="15"  
+                               Text="Product Category" 
+                               TextAlignment="Center"/>
+
+                        <TextBox x:Name="productCategory" 
+                             Visibility="Collapsed" 
+                             Foreground="{DynamicResource PrimaryTextColor}" 
+                             Background="{DynamicResource PrimaryBackgroundColor}" 
+                             TextAlignment="Center" 
+                             MaxLength="20" 
+                             TextWrapping="Wrap" 
+                             FontSize="15"
+                             Margin="50 5 50 5"
+                             TextChanged="productCategory_TextChanged"/>
+
+                        <ComboBox x:Name="comboCategory"
+                              SelectionChanged="comboCategory_SelectionChanged" 
+                              Foreground="{DynamicResource PrimaryBlackColor}"
+                              Background="{DynamicResource PrimaryBlackColor}"
+                              Margin="50 5 50 5"/>
+                        <CheckBox x:Name="createNew"
+                              HorizontalAlignment="Center" 
+                              Content="Create new"
+                              Unchecked="createNew_Unchecked"
+                              Checked="createNew_Checked"
+                              FontSize="15" 
+                              Foreground="{DynamicResource PrimaryTextColor}"/>
+                    </StackPanel>
+
+
+                    <!--productPrice-->
+                    <StackPanel Grid.Row="2">
+                        <TextBlock Foreground="{DynamicResource PrimaryTextColor}" 
+                               FontSize="15"  
+                               Text="Product Price"
+                               TextAlignment="Center"/>
+                        <TextBox x:Name="productPrice" 
+                             Foreground="{DynamicResource PrimaryTextColor}" 
+                             Background="{DynamicResource PrimaryBackgroundColor}"  
+                             TextAlignment="Center"
+                             MaxLength="50"
+                             TextWrapping="Wrap" 
+                             FontSize="15" 
+                             Margin="50 5 50 5"
+                             TextChanged="productPrice_TextChanged"/>
+                    </StackPanel>
+
+                    <!--productCount-->
+                    <StackPanel Grid.Row="2" 
+                            Grid.Column="1">
+                        <TextBlock Foreground="{DynamicResource PrimaryTextColor}" 
+                               FontSize="15" 
+                               Text="Product Count" 
+                               TextAlignment="Center"/>
+                        <TextBox x:Name="productCount" 
+                             Foreground="{DynamicResource PrimaryTextColor}" 
+                             Background="{DynamicResource PrimaryBackgroundColor}" 
+                             TextAlignment="Center" 
+                             MaxLength="50" 
+                             TextWrapping="Wrap" 
+                             FontSize="15" 
+                             Margin="50 5 50 5"
+                             TextChanged="productCount_TextChanged"/>
+                    </StackPanel>
+
+                    <!--productDescription-->
+                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2">
+                        <TextBlock Foreground="{DynamicResource PrimaryTextColor}" 
+                               FontSize="15" 
+                               Text="Description" 
+                               TextAlignment="Center"/>
+                        <TextBox x:Name="productDescription" 
+                             Foreground="{DynamicResource PrimaryTextColor}" 
+                             Background="{DynamicResource PrimaryBackgroundColor}" 
+                             MaxLength="250" 
+                             Height="140" 
+                             TextWrapping="Wrap" 
+                             FontSize="15" 
+                             Margin="50 5 50 5"/>
+                    </StackPanel>
+
+                    <Border Margin="70 5 70 5"  
+                        Grid.Row="4" 
+                        Grid.ColumnSpan="2" 
+                        Background="{DynamicResource PrimaryBackgroundColor}" 
+                        CornerRadius="8">
+                        <Button x:Name="addPhoto" 
+                            Background="{DynamicResource PrimaryBackgroundColor}" 
+                            Margin="3" Foreground="{DynamicResource PrimaryTextColor}" 
+                            BorderThickness="0" 
+                            Content="Add Photo"
+                            Click="addProductPhoto_but"/>
+                    </Border>
+                    <Border Margin="50 5 50 5"  Grid.Row="5" Grid.ColumnSpan="2" Background="{DynamicResource PrimaryTextColor}" CornerRadius="8">
+                        <Button x:Name="addProduct"
+                            Background="{DynamicResource PrimaryTextColor}" 
+                            Margin="3" 
+                            Foreground="{DynamicResource SecundaryBackgroundColor}" 
+                            BorderThickness="0" 
+                            Content="Add Product"
+                            Click="addProduct_but"
+                            MouseEnter="addProduct_MouseEnter"
+                            MouseLeave="addProduct_MouseLeave"/>
+                    </Border>
+
+
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.1*"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                x:Name="ErrorText"
+                TextAlignment="Center"
+                    TextWrapping="Wrap"
+                FontSize="13"
+                Margin="2"
+                Foreground="DarkRed"
+                Text="*Test Error"
+                FontWeight="DemiBold"/>
+                    <Border  
+                    CornerRadius="8" 
+                    Background="{DynamicResource SecundaryBackgroundColor}" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Grid.Row="1">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="8" 
+                                      Opacity="0.5"/>
+                        </Border.Effect>
+                        <Grid MinHeight="260" Width="180" Margin="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0.7*"/>
+                                <RowDefinition Height="120"/>
+                                <RowDefinition Height="0.5*"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="0.5*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border HorizontalAlignment="Center" 
+                            VerticalAlignment="Center" 
+                            Margin="3" 
+                            CornerRadius="8" 
+                            Background="{DynamicResource PrimaryBackgroundColor}">
+                                <TextBlock x:Name="categoryBlock" 
+                                   Text="Category" 
+                                   FontSize="15" 
+                                   Margin="2"/>
+                            </Border>
+
+                            <Grid x:Name="gridPhoto" 
+                          Grid.Row="1"
+                          Height="120" 
+                          Width="120" 
+                          Background="{DynamicResource PrimaryBackgroundColor}"/>
+
+                            <TextBlock x:Name="itemBlock" 
+                               Grid.Row="2" 
+                               Text="Item count" 
+                               FontSize="15" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="productBlock" 
+                               Grid.Row="3" 
+                               Text="ProductName" 
+                               Margin="5" 
+                               FontSize="20" 
+                               TextAlignment="Center" 
+                               TextWrapping="Wrap" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="priceBlock" 
+                               Grid.Row="4" 
+                               Text="Price" 
+                               FontSize="15" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+            <Border x:Name="homeView" CornerRadius="8" Background="{DynamicResource SecundaryBackgroundColor}"/>
         </Grid>
+       
     </Border>
 </Page>
