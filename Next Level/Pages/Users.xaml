@@ -7,7 +7,7 @@
       xmlns:local="clr-namespace:Next_Level.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Users" FontFamily="Poppins" Loaded="Page_Loaded">
+      Title="Users" FontFamily="Poppins" >
 
     <Border CornerRadius="8" Background="{DynamicResource SecundaryBackgroundColor}">
         <Grid>
@@ -21,40 +21,66 @@
                 <RowDefinition/>
 
             </Grid.RowDefinitions>
-            <TextBlock x:Name="DataChange" Grid.Row="0" Visibility="Collapsed" VerticalAlignment="Center" TextAlignment="Center" Text="Data is change" FontSize="13" Foreground="DarkGreen"/>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <StackPanel VerticalAlignment="Center" Margin="10">
-                    <Border x:Name="LoginBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="#181A1B">
+                <StackPanel VerticalAlignment="Center" Margin="5">
+                    <Border x:Name="LoginBorder" 
+                            BorderBrush="Gray" 
+                            BorderThickness="1"  
+                            CornerRadius="5" 
+                            Background="{DynamicResource PrimaryBackgroundColor}">
                         <Grid Margin="7 9">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="45*" />
                                 <ColumnDefinition Width="319*"/>
                             </Grid.ColumnDefinitions>
-                            <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                            <TextBlock x:Name="textLogin" MouseDown="textLogin_MouseDown" Text="Login" Style="{StaticResource textHint}" Foreground="#6B6D6D" Grid.Column="1" Margin="9,0,-2,-1" Grid.ColumnSpan="2"/>
-                            <TextBox MaxLength="30" x:Name="login" TextChanged="txtLogin_TextChanged" Style="{StaticResource textBox}" Background="#181A1B" Grid.ColumnSpan="3" Margin="10,0,0,0"/>
+                            <TextBlock x:Name="textLogin"
+                                       MouseDown="textLogin_MouseDown" 
+                                       Text="Login" Style="{StaticResource textHint}" 
+                                       Foreground="{DynamicResource PrimaryTextColor}"
+                                       Grid.Column="1" 
+                                       Margin="9,0,-2,-1" Grid.ColumnSpan="2"/>
+                            <TextBox MaxLength="30" 
+                                     x:Name="LoginTextBox"  
+                                     Style="{StaticResource textBox}" 
+                                     Background="{DynamicResource PrimaryBackgroundColor}" 
+                                     Foreground="{DynamicResource PrimaryTextColor}"
+                                     Grid.ColumnSpan="3" Margin="10,0,0,0"
+                                     TextChanged="LoginTextBox_TextChanged"/>
                         </Grid>
                     </Border>
-                    <TextBlock x:Name="LoginError" Visibility="Collapsed" Text="Login is exist" FontSize="13" Foreground="DarkRed" Margin="5 0 0 0"/>
                 </StackPanel>
-                <StackPanel VerticalAlignment="Center" Margin="10" Grid.Column="1">
-                    <Border x:Name="EmailBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="#181A1B">
+                <StackPanel VerticalAlignment="Center" 
+                            Margin="5"
+                            Grid.Column="1">
+                    <Border x:Name="EmailBorder" 
+                            BorderBrush="Gray" 
+                            BorderThickness="1"  
+                            CornerRadius="5" 
+                            Background="{DynamicResource PrimaryBackgroundColor}">
                         <Grid Margin="7 9">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                            <TextBlock x:Name="textEmail" MouseDown="textEmail_MouseDown" Text="Email" Style="{StaticResource textHint}" Foreground="#6B6D6D" Grid.Column="1" Margin="9,0,-2,-1"/>
-                            <TextBox x:Name="email" TextChanged="txtEmail_TextChanged" Style="{StaticResource textBox}" Background="#181A1B"/>
+                            <TextBlock x:Name="textEmail"
+                                       MouseDown="textEmail_MouseDown"
+                                       Text="Email" 
+                                       Style="{StaticResource textHint}" 
+                                     Foreground="{DynamicResource PrimaryTextColor}"
+                                       Grid.Column="1" 
+                                       Margin="9,0,-2,-1"/>
+                            <TextBox x:Name="EmailTextBox" 
+                                     TextChanged="txtEmail_TextChanged" 
+                                     Style="{StaticResource textBox}" 
+                                     Background="{DynamicResource PrimaryBackgroundColor}"
+                                     Foreground="{DynamicResource PrimaryTextColor}"/>
                         </Grid>
                     </Border>
-                    <TextBlock x:Name="EmailError" Visibility="Collapsed" Text="Email is exist" FontSize="13" Foreground="DarkRed" Margin="5 0 0 0"/>
                 </StackPanel>
 
             </Grid>
@@ -64,29 +90,60 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <StackPanel VerticalAlignment="Center" Margin="10" Grid.Column="0">
-                    <Border x:Name="NameBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="#181A1B" Margin="0 0 0 20">
+                <StackPanel VerticalAlignment="Center"
+                            Margin="5"
+                            Grid.Column="0">
+                    <Border x:Name="NameBorder"
+                            BorderBrush="Gray"
+                            BorderThickness="1" 
+                            CornerRadius="5"
+                            Background="{DynamicResource PrimaryBackgroundColor}"
+                            Margin="0 0 0 20">
                         <Grid Margin="7 9">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                            <TextBlock x:Name="textName" MouseDown="textName_MouseDown" Text="Name" Style="{StaticResource textHint}" Foreground="#6B6D6D" Grid.Column="1" Margin="9,0,-2,-1"/>
-                            <TextBox x:Name="name" TextChanged="txtName_TextChanged" Style="{StaticResource textBox}" Background="#181A1B"/>
+                            <TextBlock x:Name="textName" 
+                                       MouseDown="textName_MouseDown"
+                                       Text="Name" Style="{StaticResource textHint}" 
+                                     Foreground="{DynamicResource PrimaryTextColor}"
+                                       Grid.Column="1" 
+                                       Margin="9,0,-2,-1"/>
+                            <TextBox x:Name="NameTextBox"
+                                     TextChanged="txtName_TextChanged" 
+                                     Style="{StaticResource textBox}" 
+                                     Foreground="{DynamicResource PrimaryTextColor}"
+                                     Background="{DynamicResource PrimaryBackgroundColor}"/>
                         </Grid>
                     </Border>
                 </StackPanel>
-                <StackPanel VerticalAlignment="Center" Margin="10" Grid.Column="1">
-                    <Border x:Name="SurnameBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="#181A1B" Margin="0 0 0 20">
+                <StackPanel VerticalAlignment="Center"
+                            Margin="5"
+                            Grid.Column="1">
+                    <Border x:Name="SurnameBorder"
+                            BorderBrush="Gray" 
+                            BorderThickness="1"
+                            CornerRadius="5"
+                            Background="{DynamicResource PrimaryBackgroundColor}" 
+                            Margin="0 0 0 20">
                         <Grid Margin="7 9">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                            <TextBlock x:Name="textSurname" MouseDown="textSurname_MouseDown" Text="Surname" Style="{StaticResource textHint}" Foreground="#6B6D6D" Grid.Column="1" Margin="9,0,-2,-1"/>
-                            <TextBox x:Name="Surname" TextChanged="txtSurname_TextChanged" Style="{StaticResource textBox}" Background="#181A1B"/>
+                            <TextBlock x:Name="textSurname"
+                                       MouseDown="textSurname_MouseDown" 
+                                       Text="Surname" 
+                                       Style="{StaticResource textHint}"
+                                       Foreground="{DynamicResource PrimaryTextColor}"
+                                       Grid.Column="1"
+                                       Margin="9,0,-2,-1"/>
+                            <TextBox x:Name="SurnameTextBox"
+                                     TextChanged="txtSurname_TextChanged"
+                                     Style="{StaticResource textBox}" 
+                                     Foreground="{DynamicResource PrimaryTextColor}"
+                                     Background="{DynamicResource PrimaryBackgroundColor}"/>
                         </Grid>
                     </Border>
                 </StackPanel>
@@ -96,60 +153,81 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <StackPanel VerticalAlignment="Center" Margin="10" Grid.Column="0">
-                    <Border x:Name="PhoneBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="#181A1B" Margin="0 0 0 20">
+                <StackPanel VerticalAlignment="Center"
+                            Margin="5"
+                            Grid.Column="0">
+                    <Border x:Name="PhoneBorder"
+                            BorderBrush="Gray"
+                            BorderThickness="1" 
+                            CornerRadius="5" 
+                            Background="{DynamicResource PrimaryBackgroundColor}" 
+                            Margin="0 0 0 20">
                         <Grid Margin="7 9">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                            <TextBlock x:Name="textPhone" MouseDown="textPhone_MouseDown" Text="+380 (95)-921-11-87" Style="{StaticResource textHint}" Foreground="#6B6D6D" Grid.Column="1" Margin="9,0,-2,-1"/>
-                            <TextBox x:Name="Phone" TextChanged="txtPhone_TextChanged" Style="{StaticResource textBox}" Background="#181A1B"/>
+                            <TextBlock x:Name="textPhone" 
+                                       MouseDown="textPhone_MouseDown"
+                                       Text="+380 (00)-000-00-00" 
+                                       Style="{StaticResource textHint}" 
+                                       Foreground="{DynamicResource PrimaryTextColor}"
+                                       Grid.Column="1"
+                                       Margin="9,0,-2,-1"/>
+                            <TextBox x:Name="PhoneTextBox" 
+                                     TextChanged="txtPhone_TextChanged" 
+                                     Style="{StaticResource textBox}" 
+                                     Foreground="{DynamicResource PrimaryTextColor}"
+                                     Background="{DynamicResource PrimaryBackgroundColor}"/>
                         </Grid>
                     </Border>
                 </StackPanel>
-                <StackPanel VerticalAlignment="Center" Margin="10" Grid.Column="1">
-                    <!--<TextBlock x:Name="textBirth" MouseDown="textBirth_MouseDown" Text="Birthday" Style="{StaticResource textHint}" Foreground="#6B6D6D" Grid.Column="1" Margin="9,0,-2,-1"/>
-                           <TextBox x:Name="Birthday" TextChanged="txtBirth_TextChanged" Style="{StaticResource textBox}" Background="#181A1B"/>
-                            
-                        </Grid>
-                    </Border>-->
-                    <!--<TextBlock x:Name="textBirth" MouseDown="textBirth_MouseDown" Text="Birthday" Style="{StaticResource textHint}" Foreground="#6B6D6D" Grid.Column="1" Margin="9,0,-2,-1"/>
-                           <TextBox x:Name="Birthday" TextChanged="txtBirth_TextChanged" Style="{StaticResource textBox}" Background="#181A1B"/>
-                            
-                        </Grid>
-                    </Border>-->
-                    <!-- <Border x:Name="BirthdayBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="#181A1B" Margin="0 0 0 20">
-                        <Grid Margin="7 9">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Image Source="/Assets/Images/Email.png" Height="20" />-->
-                    <!--<TextBlock x:Name="textBirth" MouseDown="textBirth_MouseDown" Text="Birthday" Style="{StaticResource textHint}" Foreground="#6B6D6D" Grid.Column="1" Margin="9,0,-2,-1"/>
-                           <TextBox x:Name="Birthday" TextChanged="txtBirth_TextChanged" Style="{StaticResource textBox}" Background="#181A1B"/>
-                            
-                        </Grid>
-                    </Border>-->
+                <StackPanel VerticalAlignment="Center"
+                            Margin="5" 
+                            Grid.Column="1">
                 </StackPanel>
-                <DatePicker Background="Black" x:Name="datePicker1" IsDropDownOpen="False" SelectedDateFormat="Short" Grid.Column="1" Margin="20,11,0,34" DataContextChanged="datePicker1_DataContextChanged" />
+                <DatePicker 
+                    Foreground="{DynamicResource PrimaryTextColor}"
+                    Background="{DynamicResource PrimaryBackgroundColor}" 
+                            x:Name="BirthDatePicker" 
+                            IsDropDownOpen="False" 
+                            SelectedDateFormat="Short" 
+                            Grid.Column="1" 
+                            Margin="20,11,0,34"/>
             </Grid>
-            <StackPanel VerticalAlignment="Center" Margin="10" Grid.Row="4">
-                <Border x:Name="PasswordBorder" BorderBrush="Gray" BorderThickness="1"  CornerRadius="5" Background="#181A1B" >
+            <StackPanel VerticalAlignment="Center" 
+                        Margin="5" 
+                        Grid.Row="4">
+                <Border x:Name="PasswordBorder" 
+                        BorderBrush="Gray" 
+                        BorderThickness="1"  
+                        CornerRadius="5"
+                        Background="{DynamicResource PrimaryBackgroundColor}" >
                     <Grid Margin="7 9">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <!--<Image Source="/Assets/Images/Email.png" Height="20" />-->
-                        <TextBlock x:Name="textPassword" MouseDown="textPassword_MouseDown" Text="Password" Style="{StaticResource textHint}" Foreground="#6B6D6D" Grid.Column="1" Margin="9,0,-2,-1"/>
-                        <PasswordBox x:Name="Password" PasswordChanged="userPassword_PasswordChanged" Style="{StaticResource textBox}" Background="#181A1B"/>
+                        <TextBlock x:Name="textPassword" 
+                                   MouseDown="textPassword_MouseDown" 
+                                   Text="Password" 
+                                   Style="{StaticResource textHint}" 
+                                 Foreground="{DynamicResource PrimaryTextColor}"
+                                   Grid.Column="1" Margin="9,0,-2,-1"/>
+                        <PasswordBox x:Name="PasswordTextBox" 
+                                     PasswordChanged="userPassword_PasswordChanged" 
+                                     Style="{StaticResource textBox}" 
+                                     Foreground="{DynamicResource PrimaryTextColor}"
+                                     Background="{DynamicResource PrimaryBackgroundColor}"/>
                     </Grid>
                 </Border>
-                <TextBlock x:Name="PasswordError" Visibility="Collapsed" TextAlignment="Center" Text="Password isn't strong" FontSize="13" Foreground="DarkRed"/>
             </StackPanel>
-            <Border Padding="10" Margin="10 0 10 0" Grid.Row="5" VerticalAlignment="Center" Background="#181A1B" CornerRadius="8">
+            <Border Padding="10" 
+                    Margin="10 0 10 0" 
+                    Grid.Row="5" 
+                    VerticalAlignment="Center" 
+                    Background="{DynamicResource PrimaryBackgroundColor}" 
+                    CornerRadius="8">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -157,47 +235,53 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBlock x:Name="Characters" Foreground="#6B6D6D" Text="-Password must contain at least 8 characters" Grid.Row="0"/>
-                    <TextBlock x:Name="Number" Foreground="#6B6D6D" Text="-Password must contain at least one number" Grid.Row="1"/>
-                    <TextBlock x:Name="Special" Foreground="#6B6D6D" Text="-Password must contain at least one special character" Grid.Row="2"/>
-                    <TextBlock x:Name="Capital" Foreground="#6B6D6D" Text="-Password must contain at least one capital letter" Grid.Row="3"/>
+                    <TextBlock x:Name="Characters" 
+                               Foreground="{DynamicResource PrimaryTextColor}"
+                               Text="-Password must contain at least 8 characters" 
+                               Grid.Row="0"/>
+                    <TextBlock x:Name="Number" 
+                               Foreground="{DynamicResource PrimaryTextColor}"
+                               Text="-Password must contain at least one number" 
+                               Grid.Row="1"/>
+                    <TextBlock x:Name="Special" 
+                              Foreground="{DynamicResource PrimaryTextColor}"
+                               Text="-Password must contain at least one special character" 
+                               Grid.Row="2"/>
+                    <TextBlock x:Name="Capital" 
+                              Foreground="{DynamicResource PrimaryTextColor}"
+                               Text="-Password must contain at least one capital letter" 
+                               Grid.Row="3"/>
                 </Grid>
             </Border>
-            <Button x:Name="changeData" Grid.Row="6" Style="{DynamicResource mainButton}" Click="changeData_Click" Content="Change data" Margin="0 10 0 10"/>
+            <StackPanel
+                Grid.Row="6">
+                <TextBlock
+                x:Name="ErrorText"
+                TextAlignment="Left"
+                FontSize="13"
+                Margin="2"
+                Foreground="DarkRed"
+                Text="*Test Error"
+                FontWeight="DemiBold"/>
+                <Border        
+                        Background="{DynamicResource PrimaryTextColor}"
+                        BorderThickness="2"
+                        CornerRadius="8"
+                        Margin="2">
+                    <Button x:Name="editUserButton"
+                            Background="{DynamicResource PrimaryTextColor}"
+                            Foreground="{DynamicResource PrimaryBackgroundColor}"
+                                BorderThickness="0"
+                                Margin="2"
+                                FontSize="18"
+                            Content="Edit user" 
+                            Click="editUserButton_Click"
+                                MouseEnter="editUserButton_MouseEnter"
+                                MouseLeave="editUserButton_MouseLeave"/>
+                </Border>
+            </StackPanel>
+            
 
         </Grid>
-
-        <!--<Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0*"/>
-                <RowDefinition Height="90*"/>
-                <RowDefinition Height="90*"/>
-                <RowDefinition Height="90*"/>
-                <RowDefinition Height="90*"/>
-                <RowDefinition Height="90*"/>
-                <RowDefinition Height="0*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="233*"/>
-                <ColumnDefinition Width="566*"/>
-                <ColumnDefinition Width="0*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.RowSpan="6" Grid.ColumnSpan="2">
-                <Label Content="Name" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90" />
-                <Label Content="Name" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90" />
-                <Label Content="Birthday" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90"/>
-                <Label Content="Phone" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90" />
-                <Label Content="Email" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90" />
-                <Label Content="Password" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90" />
-            </StackPanel>
-            <StackPanel Grid.RowSpan="6" Grid.Column="2">
-                <Label Name="User" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90" HorizontalAlignment="Right"/>
-                <Label Name="Birthday" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90" HorizontalAlignment="Right"/>
-                <Label Name="Phone"  FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90"  HorizontalAlignment="Right"/>
-                <Label Name="Email" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90"  HorizontalAlignment="Right"/>
-                <Label Name="Password" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" Height="90"  HorizontalAlignment="Right"/>
-            </StackPanel>
-        </Grid>-->
     </Border>
 </Page>

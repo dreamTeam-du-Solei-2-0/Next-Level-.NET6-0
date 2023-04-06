@@ -1,4 +1,6 @@
 ﻿using Next_Level.Classes;
+using Next_Level.ContextData;
+using Next_Level.Entity;
 using Next_Level.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,270 +18,166 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Next_Level.Pages
 {
     public partial class Users : Page
     {
-        public string current_user { get; set; }
-        string path_currentUser = NextLevelPath.CURRENT_USER;
+        private readonly DataContext dataContext;
+        private Account account;
+        private Entity.User user;
+
         IFile file;
-        Accounts accounts = new Accounts();
-        User user;
+        private DispatcherTimer timer;
+        private bool FieldsNoEmpty;
+        private bool PasswordFormatCorrect;
+        private bool EmailFormatCorrect;
+
         public Users()
         {
             InitializeComponent();
+            dataContext = new();
+            BaseOptions();
+            LoadUser();
+        }
+
+        void BaseOptions()
+        {
+            FieldsNoEmpty = false;
+            PasswordFormatCorrect = false;
+            EmailFormatCorrect = true;
+            ErrorText.Visibility = Visibility.Hidden;
+
+            timer = new();
+            timer.Interval = TimeSpan.FromMilliseconds(1);
+            timer.Tick += new EventHandler(CheckFields);
+            timer.Start();
+        }
+
+        void LoadUser()
+        {
+            string path_currentUser = NextLevelPath.CURRENT_USER;
             file = new BinnaryFile(path_currentUser);
-            current_user = file.Load<string>();
-            this.user = accounts.getUserByLogin(current_user);
-            //LoginError.Visibility = Visibility.Collapsed;
-            //EmailError.Visibility = Visibility.Collapsed;
-            //PasswordError.Visibility = Visibility.Collapsed;
-            //DataChange.Visibility = Visibility.Collapsed;
+            account = dataContext.Accounts.GetAccount(file.Load<string>());
+            user = account.User;
+            if(user!=null)
+            {
+                LoginTextBox.Text = account.Login;
+                NameTextBox.Text = user.Name;
+                SurnameTextBox.Text = user.Surname;
+                EmailTextBox.Text = user.Email;
+                PhoneTextBox.Text = user.Phone;
+                BirthDatePicker.Text = user.BirthDate.ToString();
+                PasswordTextBox.Password = account.Password;
+            }
+            
         }
 
-        private void createAccount_Click(object sender, RoutedEventArgs e)
+        private void CheckFields(object sender, EventArgs args)
         {
-            int count = 0;
-
-
-            if (!EmailCheckFormat(email.Text) || EmailCheck(email.Text))
+            if (LoginTextBox.Text.Trim() == String.Empty ||
+                NameTextBox.Text.Trim() == String.Empty ||
+                SurnameTextBox.Text.Trim() == String.Empty ||
+                PasswordTextBox.Password.Trim() == String.Empty)
             {
-                if (!EmailCheckFormat(email.Text))
-                    EmailError.Visibility = Visibility.Visible;
+                FieldsNoEmpty = false;
+                ErrorText.Text = "Field is empty or contains only spaces";
+            }
+            else
+                FieldsNoEmpty = true;
+
+            if (!EnterControl.CheckPass(PasswordTextBox.Password))
+                PasswordFormatCorrect = false;
+            else PasswordFormatCorrect = true;
+
+            if (EmailTextBox.Text.Trim() != String.Empty)
+            {
+                if (!EnterControl.CheckEmail(EmailTextBox.Text))
+                    EmailFormatCorrect = false;
                 else
-                    EmailError.Visibility = Visibility.Visible;
-                EmailBorder.Margin = new Thickness(0, 0, 0, 0);
-                EmailBorder.BorderBrush = Brushes.Red;
+                    EmailFormatCorrect = true;
             }
             else
-            {
-                EmailError.Visibility = Visibility.Collapsed;
-                EmailError.Visibility = Visibility.Collapsed;
-                EmailBorder.Margin = EmailError.Margin;
-                EmailBorder.BorderBrush = Brushes.Gray;
-                count++;
-            }
-
-            if (LoginCheck(login.Text))
-            {
-                LoginError.Visibility = Visibility.Visible;
-                LoginBorder.Margin = new Thickness(0, 0, 0, 0);
-                LoginBorder.BorderBrush = Brushes.Red;
-            }
-
-            else
-            {
-                LoginError.Visibility = Visibility.Collapsed;
-                LoginBorder.Margin = LoginError.Margin;
-                LoginBorder.BorderBrush = Brushes.Gray;
-                count++;
-            }
-
-            if (!CheckPassword(Password.Password))
-            {
-                PasswordError.Visibility = Visibility.Visible;
-                PasswordBorder.Margin = new Thickness(0, 0, 0, 0);
-                PasswordBorder.BorderBrush = Brushes.Red;
-            }
-
-            else
-            {
-                PasswordError.Visibility = Visibility.Collapsed;
-                PasswordBorder.Margin = PasswordError.Margin;
-                PasswordBorder.BorderBrush = Brushes.Gray;
-                count++;
-            }
-
-            if (count >= 3)
-            {
-                DataChange.Visibility = Visibility.Visible;
-                accounts.removeUser(user);
-                user.Login = login.Text;
-                user.Name = name.Text;
-                user.Surname = Surname.Text;
-                user.Email = email.Text;
-                user.Password = Password.Password;
-                accounts.AddNew(user);
-               
-            }
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            login.Text = user.Login;
-            name.Text = user.Name;
-            Surname.Text = user.Surname;
-            email.Text = user.Email;
-            Password.Password = user.Password;
-        }
-
-        private void changeData_Click(object sender, RoutedEventArgs e)
-        {
-            accounts.removeUser(user);
-            if(!accounts.LoginIsExist(login.Text))
-                user.Login = login.Text;
-            user.Name= name.Text;
-            user.Surname=Surname.Text ;
-            if (!accounts.EmailIsExist(email.Text))
-                user.Email = email.Text;
-            user.Password=Password.Password;
-            accounts.AddNew(user);
-            if (string.IsNullOrEmpty(Surname.Text))
-            {
-                MessageBox.Show("SurnameIsEmpty");
-
-            }
-            if(string.IsNullOrEmpty(textName.Text))
-                MessageBox.Show("NameIsEmpty");
-            if (string.IsNullOrEmpty(name.Text))
-                MessageBox.Show("NameIsEmpty");
-            if (string.IsNullOrEmpty(email.Text))
-            {
-                MessageBox.Show("EmailIsEmpty");
-                if (string.IsNullOrEmpty(textEmail.Text))
-                {
-                    MessageBox.Show("EmailIsEmpty");
-                }
-            }
-            if (string.IsNullOrEmpty(textLogin.Text))
-                MessageBox.Show("loginIsEmpty");
-            if (string.IsNullOrEmpty(login.Text))
-                MessageBox.Show("loginIsEmpty");
+                EmailFormatCorrect = true;
 
         }
-        private void txtLogin_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+
+        #region TEXT_HINT_EVENTS
+        private void LoginTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(login.Text) && login.Text.Length > 0)
+            if (!string.IsNullOrEmpty(LoginTextBox.Text) && LoginTextBox.Text.Length > 0)
                 textLogin.Visibility = Visibility.Collapsed;
             else
                 textLogin.Visibility = Visibility.Visible;
-            if ((new Regex(@"^[a-zA-Z]*$")).IsMatch(login.Text))
-            {
-                login.Foreground = new SolidColorBrush(Colors.White);
-            }
-            else
-            {
-                
-                login.Foreground = new SolidColorBrush(Colors.Red);
-            }
         }
 
         private void textLogin_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            login.Focus();
+            LoginTextBox.Focus();
         }
 
         private void txtName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(name.Text) && name.Text.Length > 0)
+            if (!string.IsNullOrEmpty(NameTextBox.Text) && NameTextBox.Text.Length > 0)
                 textName.Visibility = Visibility.Collapsed;
             else
                 textName.Visibility = Visibility.Visible;
-            if ((new Regex(@"^[a-zA-Z]*$")).IsMatch(name.Text))
-            {
-                name.Foreground = new SolidColorBrush(Colors.White);
-            }
-            else
-            {
-
-                name.Foreground = new SolidColorBrush(Colors.Red);
-            }
         }
 
         private void textName_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            name.Focus();
+            NameTextBox.Focus();
         }
 
         private void txtSurname_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(Surname.Text) && Surname.Text.Length > 0)
+            if (!string.IsNullOrEmpty(SurnameTextBox.Text) && SurnameTextBox.Text.Length > 0)
                 textSurname.Visibility = Visibility.Collapsed;
             else
                 textSurname.Visibility = Visibility.Visible;
-            if ((new Regex(@"^[a-zA-Z]*$")).IsMatch(Surname.Text))
-            {
-                Surname.Foreground = new SolidColorBrush(Colors.White);
-            }
-            else
-            {
-                
-                Surname.Foreground = new SolidColorBrush(Colors.Red);
-            }
         }
 
         private void textSurname_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            
-            
-            Surname.Focus();
+            SurnameTextBox.Focus();
         }
 
         private void txtEmail_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(email.Text) && email.Text.Length > 0)
+            if (!string.IsNullOrEmpty(EmailTextBox.Text) && EmailTextBox.Text.Length > 0)
                 textEmail.Visibility = Visibility.Collapsed;
             else
                 textEmail.Visibility = Visibility.Visible;
-            if ((new Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")).IsMatch(email.Text))
-            {
-                email.Foreground = new SolidColorBrush(Colors.White);
-            }
-            else
-            {
-                email.Foreground = new SolidColorBrush(Colors.Red);
-            }
         }
 
         private void textEmail_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            email.Focus();
+            EmailTextBox.Focus();
         }
 
         private void txtPhone_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(Phone.Text) && Phone.Text.Length > 0)
+            if (!string.IsNullOrEmpty(PhoneTextBox.Text) && PhoneTextBox.Text.Length > 0)
                 textPhone.Visibility = Visibility.Collapsed;
             else
                 textPhone.Visibility = Visibility.Visible;
-            if ((new Regex(@"^\+[0-9]{3}\s\((\d+)\)-\d{3}-\d{2}-\d{2}")).IsMatch(Phone.Text))
-            {
-                Phone.Foreground = new SolidColorBrush(Colors.White);
-            }
-            else
-            {
-                // login.ForeColor = Color.Red;
-                Phone.Foreground = new SolidColorBrush(Colors.Red);
-            }
         }
 
         private void textPhone_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Phone.Focus();
+            PhoneTextBox.Focus();
         }
 
-        //private void txtBirth_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        //{
-        //    if (!string.IsNullOrEmpty(email.Text) && email.Text.Length > 0)
-        //        textBirth.Visibility = Visibility.Collapsed;
-        //    else
-        //        textBirth.Visibility = Visibility.Visible;
-        //}
-
-        //private void textBirth_MouseDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    Birthday.Focus();
-        //}
 
         private void userPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(Password.Password) && Password.Password.Length > 0)
+            if (!string.IsNullOrEmpty(PasswordTextBox.Password) && PasswordTextBox.Password.Length > 0)
                 textPassword.Visibility = Visibility.Collapsed;
             else
                 textPassword.Visibility = Visibility.Visible;
             Regex ch = new Regex("^.{8,}$");
-            if (ch.IsMatch(Password.Password))
+            if (ch.IsMatch(PasswordTextBox.Password))
             {
                 Characters.Foreground = new SolidColorBrush(Color.FromRgb(58, 177, 155));
             }
@@ -288,7 +186,7 @@ namespace Next_Level.Pages
                 Characters.Foreground = new SolidColorBrush(Color.FromRgb(198, 0, 0));
             }
             Regex number = new Regex("^(?=.*?[0-9])");
-            if (number.IsMatch(Password.Password))
+            if (number.IsMatch(PasswordTextBox.Password))
             {
                 Number.Foreground = new SolidColorBrush(Color.FromRgb(58, 177, 155));
             }
@@ -297,7 +195,7 @@ namespace Next_Level.Pages
                 Number.Foreground = new SolidColorBrush(Color.FromRgb(198, 0, 0));
             }
             Regex special = new Regex("^(?=.*?[_#?!@$%^&*-])");
-            if (special.IsMatch(Password.Password))
+            if (special.IsMatch(PasswordTextBox.Password))
             {
                 Special.Foreground = new SolidColorBrush(Color.FromRgb(58, 177, 155));
             }
@@ -306,7 +204,7 @@ namespace Next_Level.Pages
                 Special.Foreground = new SolidColorBrush(Color.FromRgb(198, 0, 0));
             }
             Regex capital = new Regex("^(?=.*?[A-Z])");
-            if (capital.IsMatch(Password.Password))
+            if (capital.IsMatch(PasswordTextBox.Password))
             {
                 Capital.Foreground = new SolidColorBrush(Color.FromRgb(58, 177, 155));
             }
@@ -318,136 +216,88 @@ namespace Next_Level.Pages
 
         private void textPassword_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Password.Focus();
+            PasswordTextBox.Focus();
         }
+        #endregion
 
-        //fields_check
-        public bool isFieldsNoEmpty()
+        private void editUserButton_MouseEnter(object sender, MouseEventArgs e)
         {
-            int count = 0;
-            if (login.Text != String.Empty)
-                count++;
-            if (name.Text != String.Empty)
-                count++;
-            if (Surname.Text != String.Empty)
-                count++;
-            if (email.Text != String.Empty)
-                count++;
-            if (Password.Password != String.Empty)
-                count++;
-            if (count != 5)
-                return false;
-            else return true;
+            if (!FieldsNoEmpty || !EmailFormatCorrect || !PasswordFormatCorrect)
+            {
+                if (LoginTextBox.Text.Trim() == String.Empty)
+                {
+                    LoginBorder.BorderBrush = Brushes.Red;
+                }
+                if (NameTextBox.Text.Trim() == String.Empty)
+                {
+                    NameBorder.BorderBrush = Brushes.Red;
+                }
+                if (SurnameTextBox.Text.Trim() == String.Empty)
+                {
+                    SurnameBorder.BorderBrush = Brushes.Red;
+                }
+                if (PasswordTextBox.Password.Trim() == String.Empty ||
+                    !EnterControl.CheckPass(PasswordTextBox.Password))
+                {
+                    PasswordBorder.BorderBrush = Brushes.Red;
+                }
+                if (EmailTextBox.Text.Trim() != String.Empty)
+                {
+                    if (!EnterControl.CheckEmail(EmailTextBox.Text))
+                        EmailBorder.BorderBrush = Brushes.Red;
+                }
+                else
+                    EmailBorder.BorderBrush = Brushes.Gray;
+                ErrorText.Visibility = Visibility.Visible;
+            }
         }
 
-        public bool CheckPassword(string password)
+        private void editUserButton_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (EnterControl.CheckPass(password))
-                return true;
-            else return false;
+            LoginBorder.BorderBrush = Brushes.Gray;
+            NameBorder.BorderBrush = Brushes.Gray;
+            SurnameBorder.BorderBrush = Brushes.Gray;
+            PasswordBorder.BorderBrush = Brushes.Gray;
+            EmailBorder.BorderBrush = Brushes.Gray;
+            ErrorText.Visibility = Visibility.Hidden;
         }
 
-        public bool EmailCheck(string email)
+        private void editUserButton_Click(object sender, RoutedEventArgs e)
         {
-            if (accounts.EmailIsExist(email))
-                return true;
-            else return false;
+            if (!(LoginTextBox.Text == account.Login))
+            {
+                if (dataContext.Accounts.IsExist(LoginTextBox.Text))
+                {
+                    ErrorText.Text = "Login is exist";
+                    ErrorText.Visibility = Visibility.Visible;
+                    LoginBorder.BorderBrush = Brushes.Red;
+                    return;
+                }
+            }
+            if (FieldsNoEmpty && EmailFormatCorrect && PasswordFormatCorrect)
+            {
+                account.Login = LoginTextBox.Text;
+                if (account.Login == "SuperAdmin")
+                    account.IsAdmin = true;
+                else
+                    account.IsAdmin = false;
+                account.Password = PasswordTextBox.Password;
+
+                user.Name = NameTextBox.Text;
+                user.Surname = SurnameTextBox.Text;
+                user.Email = EmailTextBox.Text;
+                user.Phone = PhoneTextBox.Text;
+                user.BirthDate = BirthDatePicker.SelectedDate;
+
+               
+                dataContext.Accounts.Update(account);
+                dataContext.Users.Update(user);
+
+                string path_currentUser = NextLevelPath.CURRENT_USER;
+                file = new BinnaryFile(path_currentUser);
+                file.Save(LoginTextBox.Text);
+                LoadUser();
+            }
         }
-
-        public bool EmailCheckFormat(string email)
-        {
-            if (EnterControl.CheckEmail(email))
-                return true;
-            else return false;
-        }
-
-        public bool LoginCheck(string login)
-        {
-            if (accounts.LoginIsExist(login))
-                return true;
-            else return false;
-        }
-
-        private void datePicker1_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            
-
-        }
-
-        //private void createAccount_Click(object sender, RoutedEventArgs e)
-        //{
-        //    int count = 0;
-
-        //    if (!isFieldsNoEmpty())
-        //    {
-        //        FieldsEmpty.Visibility = Visibility.Visible;
-        //        createAccount.Margin = new Thickness(0, 0, 0, 0);
-        //    }
-
-        //    else
-        //    {
-        //        FieldsEmpty.Visibility = Visibility.Collapsed;
-        //        createAccount.Margin = FieldsEmpty.Margin;
-        //        count++;
-        //    }
-
-        //    if (!EmailCheckFormat(userEmail.Text) || EmailCheck(userEmail.Text))
-        //    {
-        //        if (!EmailCheckFormat(userEmail.Text))
-        //            EmailError2.Visibility = Visibility.Visible;
-        //        else
-        //            EmailError.Visibility = Visibility.Visible;
-        //        EmailBorder.Margin = new Thickness(0, 0, 0, 0);
-        //        EmailBorder.BorderBrush = Brushes.Red;
-        //    }
-        //    else
-        //    {
-        //        EmailError.Visibility = Visibility.Collapsed;
-        //        EmailError2.Visibility = Visibility.Collapsed;
-        //        EmailBorder.Margin = EmailError.Margin;
-        //        EmailBorder.BorderBrush = Brushes.Gray;
-        //        count++;
-        //    }
-
-        //    if (LoginCheck(Login.Text))
-        //    {
-        //        LoginError.Visibility = Visibility.Visible;
-        //        LoginBorder.Margin = new Thickness(0, 0, 0, 0);
-        //        LoginBorder.BorderBrush = Brushes.Red;
-        //    }
-
-        //    else
-        //    {
-        //        LoginError.Visibility = Visibility.Collapsed;
-        //        LoginBorder.Margin = LoginError.Margin;
-        //        LoginBorder.BorderBrush = Brushes.Gray;
-        //        count++;
-        //    }
-
-        //    if (!CheckPassword(userPassword.Password))
-        //    {
-        //        PasswordError.Visibility = Visibility.Visible;
-        //        PasswordBorder.Margin = new Thickness(0, 0, 0, 0);
-        //        PasswordBorder.BorderBrush = Brushes.Red;
-        //    }
-
-        //    else
-        //    {
-        //        PasswordError.Visibility = Visibility.Collapsed;
-        //        PasswordBorder.Margin = PasswordError.Margin;
-        //        PasswordBorder.BorderBrush = Brushes.Gray;
-        //        count++;
-        //    }
-
-        //    if (count >= 4)
-        //    {
-        //        user.Login = login.Text;
-        //        user.Name = name.Text;
-        //        user.Surname = Surname.Text;
-        //        user.Email = email.Text;
-        //        user.Password = Password.Password;
-        //        accounts.AddNew(user);
-        //    }
-        //}
     }
 }
