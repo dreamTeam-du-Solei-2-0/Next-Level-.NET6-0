@@ -182,6 +182,7 @@ namespace Next_Level.Pages
                     AdminPanel admin = new AdminPanel();
                     this.Close();
                     admin.Show();
+                    return;
                 }
 
                 MainWindow main = new MainWindow();

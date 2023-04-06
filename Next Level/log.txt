@@ -9,3 +9,5 @@ The statement has been terminated.
 SEVERE - 05.04.2023 22:47:49: DataContext.ctor An attempt to attach an auto-named database for file C:\Users\dsgnrr\source\repos\Next Level\Next Level\DataBase\NextLevelDB.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
 SEVERE - 05.04.2023 22:47:52: DataContext.ctor An attempt to attach an auto-named database for file C:\Users\dsgnrr\source\repos\Next Level\Next Level\DataBase\NextLevelDB.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
 SEVERE - 05.04.2023 22:48:10: DataContext.ctor An attempt to attach an auto-named database for file C:\Users\dsgnrr\source\repos\Next Level\Next Level\DataBase\NextLevelDB.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.
+SEVERE - 06.04.2023 02:39:14: CategoryApiAdd Invalid column name 'CategoryId'.
+Invalid column name 'Name'.

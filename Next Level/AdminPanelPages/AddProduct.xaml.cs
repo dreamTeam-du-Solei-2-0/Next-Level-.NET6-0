@@ -1,9 +1,12 @@
 ﻿using Microsoft.Win32;
 using Next_Level.Classes;
+using Next_Level.ContextData;
+using Next_Level.Entity;
 using Next_Level.Interfaces;
 using Next_Level.Pages;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,6 +21,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Next_Level.AdminPanelPages
 {
@@ -25,116 +29,51 @@ namespace Next_Level.AdminPanelPages
     {
         //исходная ссылка на фото которое загружаешь
         string sourcePhoto = String.Empty;
-        //ссылка на базу проекта
-        string target = NextLevelPath.STOREBD_PATH;
-        //ссылка на файл категорий
-        string categoryPath = NextLevelPath.CATEGORIES_PATH;
-        //для проверки условия ввода данных
-        delegate bool Conditions();
+
+        private readonly DataContext dataContext;
 
         //список категорий
-        List<string> categories = new List<string>();
-        //продукты
-        ProductList products;
-        //интерфейс для записи и выгрузки данных
-        IFile file;
+        List<Category> categories;
 
+        private DispatcherTimer timer;
+
+        bool FieldsNoEmpty;
+        bool CategoryNoEmpty;
         public AddProduct()
         {
             InitializeComponent();
+            dataContext = new();
             basicSettings();
             loadCategories();
         }
-        #region CONSTRUCTOR_ACTIONS
-        //подключение кнопок к событиям, загрузка бд
         private void basicSettings()
         {
-            addProduct.Click += new RoutedEventHandler(addProduct_but);
-            addPhoto.Click += new RoutedEventHandler(addProductPhoto_but);
-            categories = new List<string>();
-            products = new ProductList();
-            file = null;
+            ErrorText.Visibility = Visibility.Hidden;
+            FieldsNoEmpty = false;
+            CategoryNoEmpty = false;
+            timer = new();
+            timer.Interval = TimeSpan.FromMilliseconds(1);
+            timer.Tick += new EventHandler(CheckFields);
+            timer.Start();
         }
-        //выгрузка категорий
         private void loadCategories()
         {
-            if (File.Exists(categoryPath))
-            {
-                //MessageBox.Show("Categories is loaded");
-                file = new XmlFormat(categoryPath);
-                categories = file.Load<List<string>>();
-                if (categories == null)
-                {
-                    categories = new List<string>();
-                    createNew.IsChecked = true;
-                    createNew.IsEnabled = false;
-                }
-                else
-                {
-                    foreach (var category in categories)
-                    {
-                        comboCategory.Items.Add(category);
-                    }
-                    comboCategory.SelectedIndex = 0;
-                }
 
-            }
-        }
-       
-        #endregion
-
-        #region WORK_WITH_FILE
-        //сохранение ктаегории в файл
-        private void AddCategory(string categoryName)
-        {
-            bool IsExists = false;
-            if (categories.Count == 0)
-            {
-                file = new XmlFormat(categoryPath);
-                categories.Add(categoryName);
-                file.Save(categories);
-            }
-            else
+            categories = dataContext.Categories.GetCategories();
+            if (categories.Count != 0)
             {
                 foreach (var category in categories)
                 {
-                    if (category == categoryName)
-                    {
-                        IsExists = true;
-                        break;
-                    }
+                    comboCategory.Items.Add(category.Name);
                 }
-                if (!IsExists)
-                {
-                    file = new XmlFormat(categoryPath);
-                    categories.Add(categoryName);
-                    file.Save(categories);
-                }
+                comboCategory.SelectedIndex = 0;
             }
-        }
-
-        //Битмап плохо работает с относительными ссылками
-        //Для создания ссылки создал этот метод
-        //Здесь также копируется в базу картинка которую подгружаешь для продукта
-        private string getPhotoPath(string nameProduct)
-        {
-            if (sourcePhoto != string.Empty)
+            else
             {
-                string fileExtension = System.IO.Path.GetExtension(sourcePhoto);
-                string product_name = nameProduct + fileExtension;
-                string photoDir = System.IO.Path.Combine(System.IO.Path.GetFullPath(target), nameProduct);
-                if (!Directory.Exists(photoDir))
-                    Directory.CreateDirectory(photoDir);
-                string targetPhoto = System.IO.Path.Combine(photoDir, product_name);
-                File.Copy(sourcePhoto, targetPhoto, true);
-                sourcePhoto = string.Empty;
-                return product_name;
+                createNew.IsChecked = true;
+                createNew.IsEnabled = false;
             }
-            return string.Empty;
         }
-        #endregion
-
-
         //очистка полей после того как нажал добавить продукт
         private void clearFields()
         {
@@ -148,187 +87,78 @@ namespace Next_Level.AdminPanelPages
             gridPhoto.Children.Clear();
         }
 
-
-
-        #region ADD_PRODUCT_CONDITIONS
-        //проверяет на содержимость пустоты или пробелов поле имя продукта
-        private bool productNameIsEmpty()
+        private void CheckFields(object sender, EventArgs args)
         {
-            Regex spaces = new Regex("^\\s*$");
-            if (productName.Text == string.Empty || spaces.IsMatch(productName.Text))
+           
+            if (productName.Text.Trim() == String.Empty ||
+                productPrice.Text.Trim() == String.Empty ||
+                productCount.Text.Trim() == String.Empty)
             {
-                //MessageBox.Show("name!!!! ne ok");
-                return false;
+                FieldsNoEmpty = false;
             }
-            else return true;
-        }
-        //проверяет на содержимость пустоты или пробелов поле категория продукта
-        private bool productCategoryIsEmpty()
-        {
-            Regex spaces = new Regex("^\\s*$");
-            if (productCategory.Text == string.Empty || spaces.IsMatch(productCategory.Text))
+            else
+                FieldsNoEmpty = true;
+            
+            if(createNew.IsChecked==true)
             {
-                if (createNew.IsChecked == true)
+                if (productCategory.Text.Trim() == String.Empty)
+                    CategoryNoEmpty = false;
+                else
+                    CategoryNoEmpty = true;
+            }
+            else
+                CategoryNoEmpty = true;
+        }
+
+        public static bool IsDigitsOnly(string str)
+        {
+            foreach (char c in str)
+            {
+                if (c < '0' || c > '9')
                     return false;
-                else return true;
-                //MessageBox.Show("Cat!!!! ne ok");
             }
-            else return true;
-        }
-        //проверяет на содержимость пустоты или пробелов поле цена продукта
-        private bool productPriceIsEmpty()
-        {
-            Regex spaces = new Regex("^\\s*$");
-            if (productPrice.Text == string.Empty || spaces.IsMatch(productPrice.Text))
-            {
-                //MessageBox.Show("Cena!!!! ne ok");
-                return false;
-            }
-            else return true;
-        }
-        //проверяет на содержимость пустоты или пробелов поле количество продуктов
-        private bool productCountIsEmpty()
-        {
-            Regex spaces = new Regex("^\\s*$");
-            if (productCount.Text == string.Empty || spaces.IsMatch(productCount.Text))
-            {
-                //MessageBox.Show("count!!! ne ok");
-                return false;
-            }
-            else return true;
-        }
-        //проверяет на правильность формата поле количество продуктов
-        private bool productCountCheckFormat()
-        {
-            Regex count = new Regex("^\\d+$");
-            if (count.IsMatch(productCount.Text))
-            {
-                //MessageBox.Show("Count ne ok");
-                return true;
-            }
-            else return false;
-        }
-        //проверяет на правильность формата поле цена продукта
-        private bool productPriceCheckFormat()
-        {
-            Regex price = new Regex("^\\d+,\\d{1,2}$");
-            if (price.IsMatch(productPrice.Text))
-            {
-                //MessageBox.Show("Cena ok");
-                return true;
-            }
-            else return false;
-        }
-        //проверяются все условия ввода данных
-        bool checkAddConditions()
-        {
-            Conditions conditions = new Conditions(productNameIsEmpty);
-            conditions += productCategoryIsEmpty;
-            conditions += productPriceIsEmpty;
-            conditions += productCountIsEmpty;
-            conditions += productCountCheckFormat;
-            conditions += productPriceCheckFormat;
-            bool IsOk = true;
-            foreach (Conditions condition in conditions.GetInvocationList())
-            {
-                if (condition() == false)
-                {
-                    IsOk = false;
-                    break;
-                }
-            }
-            return IsOk;
-        }
-        #endregion
 
-        
-
-        #region EVENTS
-
-        //Проверяет формат ввода цены
-        private void priceCheck(object sender, TextChangedEventArgs e)
-        {
-            Regex price = new Regex("^\\d+,\\d{1,2}$");
-            if (!price.IsMatch(productPrice.Text))
-                productPrice.BorderBrush = Brushes.Red;
-            else productPrice.BorderBrush = Brushes.DarkGreen;
-            if (productPrice.Text != string.Empty)
-                priceBlock.Text = "Price: " + productPrice.Text;
-            else
-                priceBlock.Text = "Price";
-        }
-        //Проверяет формат ввода кол-ва продуктов
-        private void countCheck(object sender, TextChangedEventArgs e)
-        {
-            Regex price = new Regex("^\\d+$");
-            if (!price.IsMatch(productCount.Text))
-                productCount.BorderBrush = Brushes.Red;
-            else productCount.BorderBrush = Brushes.DarkGreen;
-            if (productCount.Text != string.Empty)
-                itemBlock.Text = "Item count: " + productCount.Text;
-            else
-                itemBlock.Text = "Item count";
+            return true;
         }
 
-
+        #region BUTTONS_EVENTS
         //ДОБАВЛЯЕТ ТОВАР В БАЗУ
         private void addProduct_but(object sender, RoutedEventArgs e)
-        {
-            //Условия ввода данных выполнились?
-            bool IsOk = checkAddConditions();
-            if (IsOk)
+        { 
+            if (FieldsNoEmpty && CategoryNoEmpty)
             {
-                //Создаём продукт
-                Product product = new Product();
-                product.productName = productName.Text;
+                bool isValid = Regex.IsMatch(productPrice.Text, @"^[0-9]*\.?[0-9]+$");
+                if (!isValid)
+                {
+                    productPrice.Text = String.Empty;
+                    return;
+                }
+                Entity.Product product = new();
+                product.Name = productName.Text;
+                product.Description = productDescription.Text;
+                product.Count = int.Parse(productCount.Text);
+                product.Price = double.Parse(productPrice.Text, CultureInfo.InvariantCulture);
+                if (sourcePhoto != String.Empty)
+                {
+                    product.Photo = File.ReadAllBytes(sourcePhoto);
+                }
                 if (createNew.IsChecked == true)
                 {
-                    product.Category = productCategory.Text;
-                    //Записываем категорию в файл
-                    AddCategory(product.Category);
+                    Category category = new();
+                    category.Name = productCategory.Text;
+                    dataContext.Categories.Add(category);
+                    product.CategoryId = category.CategoryId;
                 }
                 else
                 {
-                    product.Category = comboCategory.SelectedItem.ToString();
+                    var category = dataContext.Categories.GetCategory(comboCategory.SelectedItem.ToString());
+                    product.CategoryId = category.CategoryId;
                 }
-                //если пользователь ввёл запятую заменятся на точку
-                if (productPrice.Text.Contains(','))
-                    productPrice.Text.Replace(',', '.');
-                //запись данных в продукт
-                product.Id = "nl" + generateId();
-                product.productPrice = double.Parse(productPrice.Text);
-                product.productCount = int.Parse(productCount.Text);
-                product.productPhoto = getPhotoPath(product.productName);
-                product.descriptionProduct = productDescription.Text;
-                //записывает в файл продукт
-                products.AddNew(product);
-                //уведомление о том что продукт создан
-                ProductView productView = new ProductView(product);
-                productView.ShowDialog();
-                //очистка полей
+                dataContext.Products.Add(product);
                 clearFields();
             }
         }
-        string generateId()
-        {
-            string result = string.Empty;
-            Random random = new Random();
-            int[] id = new int[5];
-            while (true)
-            {
-                result = string.Empty;
-                for (int i = 0; i < 5; i++)
-                {
-                    id[i] = random.Next(0, 9);
-                    result += id[i];
-                }
-                if (products.idIsUnique(result))
-                    break;
-            }
-
-            return result;
-        }
-
+      
         //Достаёт полный путь к картинке которую загружаем для продкута
 
         private void addProductPhoto_but(object sender, RoutedEventArgs e)
@@ -343,11 +173,34 @@ namespace Next_Level.AdminPanelPages
             gridPhoto.Children.Add(createImageBox(sourcePhoto));
         }
 
+        private void addProduct_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (!FieldsNoEmpty)
+            {
+                ErrorText.Visibility = Visibility.Visible;
+                productName.BorderBrush = Brushes.Red;
+                productPrice.BorderBrush = Brushes.Red;
+                productCount.BorderBrush = Brushes.Red;
+                ErrorText.Text = "Fields is empty or conatins only spaces";
+            }
+            if (createNew.IsChecked == true && !CategoryNoEmpty)
+            {
+                ErrorText.Visibility = Visibility.Visible;
+                productCategory.BorderBrush = Brushes.Red;
+                ErrorText.Text = "Fields is empty or conatins only spaces";
+            }
+        }
+        private void addProduct_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ErrorText.Visibility = Visibility.Hidden;
+            productName.BorderBrush = Brushes.Gray;
+            productPrice.BorderBrush = Brushes.Gray;
+            productCount.BorderBrush = Brushes.Gray;
+            productCategory.BorderBrush = Brushes.Gray;
+        }
         #endregion
 
-        #region CREATE_ELEMENTS
-
-        //загрузка фото
+        #region PRODUCT_PHOTO_VIEW
         BitmapImage loadPhoto(string path)
         {
             BitmapImage img = new BitmapImage();
@@ -370,19 +223,9 @@ namespace Next_Level.AdminPanelPages
             img.Source = loadPhoto(photoPath);
             return img;
         }
-
-        //возвращает 16-ричный цвет
-        SolidColorBrush SetColor(string hex)
-        {
-            return (SolidColorBrush)(new BrushConverter().ConvertFrom(hex));
-        }
-
-        //Динамическое создание объекта продукт
-        //Параметры: продукт, цвет фона, цвет текста
-
-
         #endregion
 
+        #region CATEGORIES_COMBO_TEXTBOX_EVENTS
         private void createNew_Checked(object sender, RoutedEventArgs e)
         {
             if(createNew.IsChecked==true)
@@ -401,9 +244,9 @@ namespace Next_Level.AdminPanelPages
                 productCategory.Visibility = Visibility.Collapsed;
             }
         }
+        #endregion
 
-       
-
+        #region VIEW_BLOCK_EVENTS
         private void comboCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(createNew.IsChecked==false)
@@ -412,22 +255,46 @@ namespace Next_Level.AdminPanelPages
 
         private void productName_TextChanged(object sender, TextChangedEventArgs e)
         {
-           if (productName.Text != string.Empty)
+           if (productName.Text.Trim() != string.Empty)
                productBlock.Text = productName.Text;
            else
                productBlock.Text = "ProductName";
         }
-
-
         private void productCategory_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (createNew.IsChecked == true)
             {
-                if (productCategory.Text != string.Empty)
+                if (productCategory.Text.Trim() != string.Empty)
                     categoryBlock.Text = productCategory.Text;
                 else
                     categoryBlock.Text = "Category";
             }
         }
+
+        private void productPrice_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (productPrice.Text.Contains(","))
+                productPrice.Text = productPrice.Text.Replace(",", ".");
+           
+            if (productPrice.Text.Trim() != string.Empty)
+                priceBlock.Text = productPrice.Text;
+            else
+                priceBlock.Text = "Price";
+        }
+
+        private void productCount_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Regex regex = new Regex("^[0-9]+$");
+            bool isMatch = regex.IsMatch(productCount.Text);
+            if (!isMatch)
+                productCount.Text = String.Empty;
+            if (productCount.Text.Trim() != string.Empty)
+                itemBlock.Text = productCount.Text;
+            else
+                itemBlock.Text = "Items count";
+        }
+        #endregion
+
+        
     }
 }
