@@ -133,6 +133,12 @@ namespace Next_Level.AdminPanelPages
                     productPrice.Text = String.Empty;
                     return;
                 }
+                if(dataContext.Categories.GetCategory(productCategory.Text)!=null)
+                {
+                    ErrorText.Text = "This category exist";
+                    ErrorText.Visibility = Visibility.Visible;
+                    return;
+                }
                 Entity.Product product = new();
                 product.Name = productName.Text;
                 product.Description = productDescription.Text;

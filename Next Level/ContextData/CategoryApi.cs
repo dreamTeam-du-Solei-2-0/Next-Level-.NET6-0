@@ -20,6 +20,36 @@ namespace Next_Level.ContextData
             categoryList = null;
         }
 
+        public bool Delete(Entity.Category category)
+        {
+            try
+            {
+                using SqlCommand cmd = new()
+                {
+                    Connection = connection,
+                    CommandText = @"UPDATE Categories
+                                  SET DeleteDt = CURRENT_TIMESTAMP
+                                  WHERE CategoryId = @id; "
+                };
+                cmd.Parameters.AddWithValue("@id", category.CategoryId);
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+                String msg =
+                    DateTime.Now + ": " +
+                    this.GetType().Name +
+                    System.Reflection.MethodBase.GetCurrentMethod()?.Name +
+                    " " + ex.Message;
+
+                // TODO: LOG
+                App.Logger.Log(msg, "SEVERE");
+                return false;
+            }
+            return true;
+        }
+
         public Category GetCategory(String categoryName)
         {
             Category category = null;
