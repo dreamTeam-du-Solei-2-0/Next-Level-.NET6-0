@@ -31,5 +31,13 @@ namespace Next_Level.Entity
         }
 
         internal DataContext dataContext;
+
+        public List<Product> ?Products
+        {
+            get => dataContext?.Products
+                .GetProducts()
+                .Where(p => p.CategoryId == this.CategoryId&&p.DeleteDt is null)
+                .ToList();
+        }
     }
 }

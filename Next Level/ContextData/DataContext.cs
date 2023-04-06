@@ -46,5 +46,9 @@ namespace Next_Level.ContextData
             Categories = new(connection, this);
             Products = new(connection, this);
         }
+        public void CloseConnection()
+        {
+            connection.Close();
+        }
     }
 }

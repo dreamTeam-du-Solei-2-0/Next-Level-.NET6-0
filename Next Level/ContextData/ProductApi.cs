@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,36 @@ namespace Next_Level.ContextData
             this.context = context;
             this.connection = _connection;
             productList = null;
+        }
+
+        public bool Delete(Entity.Product product)
+        {
+            try
+            {
+                using SqlCommand cmd = new()
+                {
+                    Connection = connection,
+                    CommandText = @"UPDATE Products
+                                  SET DeleteDt = CURRENT_TIMESTAMP
+                                  WHERE ProductId = @id; "
+                };
+                cmd.Parameters.AddWithValue("@id", product.ProductId);
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            }
+            catch (Exception ex)
+            {
+                String msg =
+                    DateTime.Now + ": " +
+                    this.GetType().Name +
+                    System.Reflection.MethodBase.GetCurrentMethod()?.Name +
+                    " " + ex.Message;
+
+                // TODO: LOG
+                App.Logger.Log(msg, "SEVERE");
+                return false;
+            }
+            return true;
         }
 
         public List<Product> GetProducts()
