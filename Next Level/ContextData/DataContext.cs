@@ -17,6 +17,7 @@ namespace Next_Level.ContextData
         internal UserApi Users { get; set; }
         internal AccountApi Accounts { get; set; }
         internal CategoryApi Categories { get; set; }
+        internal FeedbackApi Feedbacks { get; set; }
         internal ProductApi Products { get; set; }
         public DataContext()
         {
@@ -45,6 +46,7 @@ namespace Next_Level.ContextData
             Users = new(connection, this);
             Categories = new(connection, this);
             Products = new(connection, this);
+            Feedbacks = new(connection, this);
         }
         public void CloseConnection()
         {

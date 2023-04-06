@@ -51,6 +51,15 @@ namespace Next_Level.Entity
               ? null
               : reader.GetDateTime("DeleteDt");
         }
-        internal DataContext dataContext;
+        internal DataContext? dataContext;
+
+        public List<Feedback>? Feedbacks
+        {
+            get => dataContext?
+                .Feedbacks
+                .GetFeedbacks()
+                .Where(f => f.ProductId == this.ProductId)
+                .ToList();
+        }
     }
 }
