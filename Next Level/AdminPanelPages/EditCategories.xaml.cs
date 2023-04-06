@@ -51,7 +51,7 @@ namespace Next_Level.AdminPanelPages
                 text.HorizontalAlignment = HorizontalAlignment.Center;
                 text.FontSize = 100;
                 text.Text = "No categories";
-                text.Foreground = (SolidColorBrush)FindResource("DynamicResource PrimaryTextColor");
+                text.Foreground = (SolidColorBrush)FindResource("PrimaryTextColor");
                 MainWindow.Child = text;
             }
         }

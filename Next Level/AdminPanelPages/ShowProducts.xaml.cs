@@ -65,6 +65,16 @@ namespace Next_Level.AdminPanelPages
                     }
                 }
             }
+            else
+            {
+                TextBlock text = new TextBlock();
+                text.VerticalAlignment = VerticalAlignment.Center;
+                text.HorizontalAlignment = HorizontalAlignment.Center;
+                text.FontSize = 100;
+                text.Text = "No products";
+                text.Foreground = (SolidColorBrush)FindResource("PrimaryTextColor");
+                homeView.Child=text;
+            }
         }
         #region EVENTS
 

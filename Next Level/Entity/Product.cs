@@ -53,6 +53,14 @@ namespace Next_Level.Entity
         }
         internal DataContext? dataContext;
 
+        public Category? Category
+        {
+            get => dataContext?
+                .Categories
+                .GetCategories()
+                .Find(c => c.CategoryId == this.CategoryId);
+        }
+
         public List<Feedback>? Feedbacks
         {
             get => dataContext?

@@ -29,7 +29,7 @@
                         Background="#15531C"
                         BorderThickness="0"
                         FontSize="18"
-                        Margin="5" Click="selectAll_Click"/>
+                        Margin="5" />
                 </Border>
                 
                 <Border Background="#15531C"
@@ -42,7 +42,7 @@
                         Background="#15531C"
                         BorderThickness="0"
                         FontSize="18"
-                        Margin="5" Click="unselect_Click"/>
+                        Margin="5"/>
                 </Border>
 
                 <Border Background="#d32f2f"
@@ -55,7 +55,7 @@
                         Background="#d32f2f"
                         BorderThickness="0"
                         FontSize="18"
-                        Margin="5" Click="delete_Click"/>
+                        Margin="5" />
                 </Border>
             </WrapPanel>
             <ScrollViewer 

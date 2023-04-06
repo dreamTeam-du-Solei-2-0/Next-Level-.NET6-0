@@ -62,32 +62,19 @@ namespace Next_Level.Pages
                     }
                 }
             }
+            else
+            {
+                TextBlock text = new TextBlock();
+                text.VerticalAlignment = VerticalAlignment.Center;
+                text.HorizontalAlignment = HorizontalAlignment.Center;
+                text.FontSize = 100;
+                text.Text = "No products";
+                text.Foreground = (SolidColorBrush)FindResource("PrimaryTextColor");
+                homeView.Child = text;
+            }
         }
         #region EVENTS
 
-        //private void button_InfoProduct(object sender, RoutedEventArgs e)
-        //{
-        //    Button button = (Button)sender;
-        //    var index = button.Name.IndexOf("_");
-        //    var category_name = button.Name.Substring(0, index);
-        //    var category = dataContext.Categories.GetCategory(category_name);
-        //    Entity.Product Product = null;
-        //    foreach (var product in category.Products)
-        //    {
-        //        if (product.ProductId.ToString().Contains(button.Name.Substring(index + 1)))
-        //        {
-        //            Product = product;
-        //            break;
-        //        }
-        //    }
-        //    dataContext.Products.Delete(Product);
-        //    dataContext.CloseConnection();
-        //    dataContext = new();
-        //    category = dataContext.Categories.GetCategory(category_name);
-        //    if (category.Products.Count == 0)
-        //        dataContext.Categories.Delete(category);
-        //    LoadProducts();
-        //}
 
         private void button_BuyProduct(object sender, RoutedEventArgs e)
         {
